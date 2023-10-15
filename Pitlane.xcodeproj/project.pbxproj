@@ -163,7 +163,6 @@
 				580F7C402AC0CF6300E6DD88 /* ViewModels */,
 				58D500BA2A176E7500D5E10E /* ViewControllers */,
 				58D5009E2A176E2200D5E10E /* Views */,
-				58D500B42A176E5100D5E10E /* Extensions */,
 				58D500B32A176E5100D5E10E /* Managers */,
 				58D500B52A176E5100D5E10E /* Utillities */,
 				58D500882A176DA700D5E10E /* AppDelegate.swift */,
@@ -220,13 +219,6 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
-		58D500B42A176E5100D5E10E /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		58D500B52A176E5100D5E10E /* Utillities */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,7 +271,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					58D500842A176DA700D5E10E = {
 						CreatedOnToolsVersion = 14.2;
@@ -413,6 +405,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -473,6 +466,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

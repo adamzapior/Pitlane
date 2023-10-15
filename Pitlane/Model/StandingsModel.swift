@@ -35,7 +35,7 @@ struct StandingsListModel: Codable {
 struct DriverStandingModel: Codable {
     let position, positionText, points, wins: String
     let driver: DriverModel
-    let constructors: [ConstructorModel]
+    let constructors: [ConstructorModel]  // arayy beforeee
 
     enum CodingKeys: String, CodingKey {
         case position, positionText, points, wins
