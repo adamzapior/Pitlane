@@ -1,8 +1,9 @@
 import Foundation
 
 protocol StandingsVMDelegate: AnyObject {
-    func standingsDidUpdate(_ viewModel: StandingsVM, standings: [DriverStandingModel])
-    func driverStandingsDidUpdate(_ viewModel: StandingsVM, driverStandings: [DriverStandingModel])
+//    func standingsDidUpdate(_ viewModel: StandingsVM, standings: [DriverStandingModel])
+    func driverStandingDidUpdate(_ viewModel: StandingsVM, standing: [DriverStandingModel])
+    func constructorStandingDidUpdate(_ viewModel: StandingsVM, standing: [ConstructorStandingModel])
     func standingsDidFailToUpdate(_ viewModel: StandingsVM, error: Error)
 }
 
@@ -10,92 +11,34 @@ class StandingsVM {
     var repository = Repository()
     weak var delegate: StandingsVMDelegate?
 
-    var standings: [StandingsListModel] = []
-
-//    {
-//        didSet {
-//            delegate?.standingsDidUpdate(self, standings: standings)
-//
-//            driverStandings = extractDriverStandings(from: standings)
-//        }
-//    }
-
-    var driverStandings: [DriverStandingModel] = []
-
-    var driversTest: [DriverStandingModel] = [DriverStandingModel(
-        position: "1",
-        positionText: "1st",
-        points: "100",
-        wins: "5",
-        driver: DriverModel(
-            driverID: "hamiltonL44",
-            permanentNumber: "44",
-            code: "HAM",
-            url: "https://www.formula1.com/drivers/lewis-hamilton/",
-            givenName: "Lewis",
-            familyName: "Hamilton",
-            dateOfBirth: "1985-01-07",
-            nationality: "British"
-        ),
-        constructors: [
-            ConstructorModel(
-                constructorID: "mercedes",
-                url: "https://www.formula1.com/teams/Mercedes-AMG-Petronas-Formula-One-Team/",
-                name: "Mercedes-AMG Petronas",
-                nationality: "German"
-            ),
-            ConstructorModel(
-                constructorID: "redbull",
-                url: "https://www.formula1.com/teams/Red-Bull-Racing/",
-                name: "Red Bull Racing",
-                nationality: "Austrian"
-            )
-        ]
-    )]
-
-//    {
-//        didSet {
-//            delegate?.driverStandingsDidUpdate(self, driverStandings: driverStandings)
-//        }
-//    }
+    var driverStanding: [DriverStandingModel] = []
+    var constructorStanding: [ConstructorStandingModel] = []
 
     func fetchStandings() async {
-        switch await repository.getStandindigs() {
-        case let .success(fetchedStandings):
-            driverStandings = fetchedStandings
-            delegate?.standingsDidUpdate(self, standings: driverStandings)
-        case let .failure(error):
-            print("Error fetching standings: \(error)")
-            delegate?.standingsDidFailToUpdate(self, error: error)
+        do {
+            async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStanding()
+            async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStanding()
+
+            let driverResult = await driverStandingsResult
+            let constructorResult = await constructorStandingsResult
+
+            switch (driverResult, constructorResult) {
+            case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
+                driverStanding = fetchedDriverStandings
+                constructorStanding = fetchedConstructorStandings
+
+                delegate?.driverStandingDidUpdate(self, standing: driverStanding)
+                delegate?.constructorStandingDidUpdate(self, standing: constructorStanding)
+                
+            // In this case i would send same information to delegate in ViewController about failed API Call
+            case let (.failure(driverError), _):
+                print("Error fetching driver standings")
+                delegate?.standingsDidFailToUpdate(self, error: driverError)
+
+            case let (_, .failure(constructorError)):
+                print("Error fetching constructor standings")
+                delegate?.standingsDidFailToUpdate(self, error: constructorError)
+            }
         }
     }
-
-    func fetch() async {
-        switch await repository.getStandindigs() {
-        case .success: break
-        case .failure: break
-        }
-    }
-
-    func updateStandings(with newStandings: [DriverStandingModel]) {
-        driverStandings = newStandings
-//        driverStandings = extractDriverStandings(from: newStandings)
-
-        // Możesz także tutaj powiadomić delegata o aktualizacji jeśli jest to potrzebne
-//        delegate?.standingsDidUpdate(self, standings: standings)
-    }
-
-//    private func extractDriverStandings(from standingsList: [StandingsModel])
-//        -> [DriverStandingModel]
-//    {
-//        var allDriverStandings: [DriverStandingModel] = []
-//        for standing in standingsList {
-//            for standingList in standing.standingsLists {
-//                if let driverStandings = standingList.driverStandings {
-//                    allDriverStandings.append(contentsOf: driverStandings)
-//                }
-//            }
-//        }
-//        return allDriverStandings
-//    }
 }

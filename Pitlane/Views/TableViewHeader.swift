@@ -14,6 +14,7 @@ class TableViewHeader: UIView {
         let sc = UISegmentedControl(items: standingType)
         return sc
     }()
+    
 
     var standingTypeChanged: ((UISegmentedControl) -> Void)?
 
@@ -22,16 +23,16 @@ class TableViewHeader: UIView {
         setupUI()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        let height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        if frame.size.height != height {
-            var newFrame = frame
-            newFrame.size.height = height
-            frame = newFrame
-        }
-    }
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//
+//        let height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+//        if frame.size.height != height {
+//            var newFrame = frame
+//            newFrame.size.height = height
+//            frame = newFrame
+//        }
+//    }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -41,14 +42,14 @@ class TableViewHeader: UIView {
     private func setupUI() {
         addSubview(segmentedControl)
         segmentedControl.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
-            make.left.equalToSuperview().offset(10)
-            make.right.equalToSuperview().offset(-10)
-            make.bottom.equalToSuperview().offset(-10)
-        }
+                make.top.equalToSuperview().offset(10)
+                make.centerX.equalToSuperview()
+                make.width.equalTo(300)
+            }
 
         segmentedControl.addTarget(self, action: #selector(standingTypeDidChange(_:)), for: .valueChanged)
         segmentedControl.selectedSegmentIndex = 0
+
     }
 
     @objc private func standingTypeDidChange(_ sender: UISegmentedControl) {
