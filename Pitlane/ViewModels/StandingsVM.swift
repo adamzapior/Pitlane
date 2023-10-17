@@ -1,7 +1,6 @@
 import Foundation
 
 protocol StandingsVMDelegate: AnyObject {
-//    func standingsDidUpdate(_ viewModel: StandingsVM, standings: [DriverStandingModel])
     func driverStandingDidUpdate(_ viewModel: StandingsVM, standing: [DriverStandingModel])
     func constructorStandingDidUpdate(_ viewModel: StandingsVM, standing: [ConstructorStandingModel])
     func standingsDidFailToUpdate(_ viewModel: StandingsVM, error: Error)
@@ -15,13 +14,19 @@ class StandingsVM {
     var constructorStanding: [ConstructorStandingModel] = []
 
     var highestPoints: Int?
+    var constuctorHighestPoints: Int?
+
     
     func updateHighestPoints() {
             highestPoints = driverStanding.compactMap { Int($0.points) }.max()
         }
     
+    func updateConstuctorHighestPoints() {
+        constuctorHighestPoints = constructorStanding.compactMap { Int($0.points) }.max()
+    }
+    
     init() {
-        
+       
     }
     
     func fetchStandings() async {
@@ -37,6 +42,7 @@ class StandingsVM {
                 driverStanding = fetchedDriverStandings
                 constructorStanding = fetchedConstructorStandings
                 updateHighestPoints()
+                updateConstuctorHighestPoints()
 
                 delegate?.driverStandingDidUpdate(self, standing: driverStanding)
                 delegate?.constructorStandingDidUpdate(self, standing: constructorStanding)

@@ -5,6 +5,14 @@ import UIKit
 class StandingsVC: UIViewController {
     var vm = StandingsVM()
 
+    private var displayedStandingType: DisplayedStandingType = .driver
+
+    let segmentedControl: UISegmentedControl = {
+        let standingType = ["Drivers", "Constructors"]
+        let sc = UISegmentedControl(items: standingType)
+        return sc
+    }()
+
     private let calendarIcon: UIImageView = {
         let icon = UIImageView(image: UIImage(systemName: "calendar"))
         icon.tintColor = .red
@@ -29,8 +37,8 @@ class StandingsVC: UIViewController {
         return ai
     }()
 
-    private let tableViewHeader: TableViewHeader = {
-        let view = TableViewHeader()
+    private let tableViewHeader: UIView = {
+        let view = UIView()
         view.backgroundColor = .systemBackground
         return view
     }()
@@ -88,6 +96,27 @@ class StandingsVC: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.sizeToFit()
 
+        tableViewHeader.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
+        tableView.addSubview(tableViewHeader)
+        tableViewHeader.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.height.equalTo(50)
+        }
+
+        tableView.tableHeaderView = tableViewHeader
+
+        tableViewHeader.addSubview(segmentedControl)
+
+        segmentedControl.snp.makeConstraints { make in
+            make.top.left.equalToSuperview().offset(10)
+            make.right.bottom.equalToSuperview().offset(-10)
+        }
+
+        segmentedControl.addTarget(self, action: #selector(standingTypeDidChange(_:)), for: .valueChanged)
+        segmentedControl.selectedSegmentIndex = 0
+
         guard let navigationBar = navigationController?.navigationBar else { return }
         navigationBar.addSubview(calendarIcon)
         calendarIcon.layer.cornerRadius = Const.ImageSizeForLargeState / 2
@@ -100,12 +129,8 @@ class StandingsVC: UIViewController {
         }
 
         view.addSubview(tableView)
-        tableView.tableHeaderView = TableViewHeader(
-            frame: CGRect(x: 0,
-                          y: 0,
-                          width: tableView.bounds.width,
-                          height: 60)
-        )
+//        tableView.estimatedRowHeight = 64.0 // Tu podajesz przybliżoną wysokość komórki
+        ////        tableView.rowHeight = UITableView.automaticDimension
 
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
@@ -161,10 +186,6 @@ class StandingsVC: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(calendarButtonTapped))
         calendarIcon.isUserInteractionEnabled = true
         calendarIcon.addGestureRecognizer(tapGesture)
-
-        tableViewHeader.standingTypeChanged = { [weak self] segmentedControl in
-            self?.standingTypeDidChange(segmentedControl)
-        }
     }
 
     @objc private func calendarButtonTapped() {
@@ -174,24 +195,46 @@ class StandingsVC: UIViewController {
 
     @objc private func standingTypeDidChange(_ segmentedControl: UISegmentedControl) {
         switch segmentedControl.selectedSegmentIndex {
-        case 0: break
-        case 1: break
-        default: break
+            case 0:
+                displayedStandingType = .driver
+            case 1:
+                displayedStandingType = .constructor
+            default:
+                break
         }
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        print("TESTTTT")
     }
 }
 
 extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-        return vm.driverStanding.count
+        switch displayedStandingType {
+            case .driver:
+                return vm.driverStanding.count
+            case .constructor:
+                return vm.constructorStanding.count
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "StandingsCell", for: indexPath) as? StandingsCell else {
             fatalError("Custom cell error")
         }
-        cell.configure(with: vm.driverStanding[indexPath.row], maxPoints: vm.highestPoints ?? 1)
+        switch displayedStandingType {
+            case .driver:
+                cell.configureDriverCell(with: vm.driverStanding[indexPath.row], maxPoints: vm.highestPoints ?? 1)
+            case .constructor:
+                cell.configureConstuctorCell(with: vm.constructorStanding[indexPath.row], maxPoints: vm.constuctorHighestPoints ?? 1)
+        }
+
         return cell
+    }
+
+    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+        return 64
     }
 }
 
@@ -225,4 +268,9 @@ extension StandingsVC: StandingsVMDelegate {
             print(driverStanding.driver.familyName)
         }
     }
+}
+
+private enum DisplayedStandingType {
+    case driver
+    case constructor
 }

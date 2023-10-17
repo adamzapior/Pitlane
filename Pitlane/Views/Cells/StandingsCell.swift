@@ -15,9 +15,6 @@ class StandingsCell: UITableViewCell {
     private let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
-        ////        view.clipsToBounds = true
-//        view.backgroundColor = .lightGray
-        
         return view
     }()
     
@@ -30,7 +27,6 @@ class StandingsCell: UITableViewCell {
 
     private let barBackground: UIView = {
         let view = UIView()
-//            view.backgroundColor = .gray
         return view
     }()
     
@@ -62,7 +58,6 @@ class StandingsCell: UITableViewCell {
         let flag = UIImageView()
         flag.layer.masksToBounds = true
         flag.layer.cornerRadius = 6
-//        imageView.contentMode = .scaleAspectFit
         return flag
     }()
 
@@ -78,6 +73,8 @@ class StandingsCell: UITableViewCell {
     }
     
     let countryMapping: [String: String] = [
+        "Austrian": "AT",
+        "Swiss": "CH",
         "British": "GB",
         "Mexican": "MX",
         "Spanish": "ES",
@@ -95,11 +92,9 @@ class StandingsCell: UITableViewCell {
         "American": "US",
         "Dutch": "NL",
         "Italian": "IT",
-        "Polish": "PL",
-        // ... dodaj pozostałe mapowania
     ]
     
-    func configure(with model: DriverStandingModel, maxPoints: Int) {
+    func configureDriverCell(with model: DriverStandingModel, maxPoints: Int) {
         positionLabel.text = model.position
         nameLabel.text = model.driver.givenName
         surnameLabel.text = model.driver.familyName
@@ -123,6 +118,32 @@ class StandingsCell: UITableViewCell {
         }
     }
     
+    func configureConstuctorCell(with model: ConstructorStandingModel, maxPoints: Int) {
+        positionLabel.text = model.position
+        nameLabel.text = model.constructor.name
+        surnameLabel.text = ""
+        pointsLabel.text = model.points
+        
+        if let countryCode = countryMapping[model.constructor.nationality],
+           let flag = Flag(countryCode: countryCode)
+        {
+            flagImage.image = flag.image(style: .none)
+        } else {
+            flagImage.image = nil
+        }
+        
+        let maxPointsConverted = CGFloat(exactly: maxPoints)
+    
+        if let pointsInt = Int(model.points), let points = CGFloat(exactly: pointsInt) {
+            let ratio = points / maxPointsConverted!
+            adjustBarWidth(ratio: ratio)
+        } else {
+            adjustBarWidth(ratio: 0)
+        }
+    }
+    
+    
+    
     private func adjustBarWidth(ratio: CGFloat) {
         var minRatio: CGFloat = 0.03
         
@@ -143,9 +164,10 @@ class StandingsCell: UITableViewCell {
     private func setupUI() {
         addSubview(containerView)
         containerView.snp.makeConstraints { make in
-            make.top.left.equalToSuperview().offset(5)
-            make.bottom.right.equalToSuperview().offset(-5)
-            make.width.height.equalTo(48)
+            make.top.equalToSuperview().offset(32)
+            make.bottom.equalToSuperview().offset(-32)
+            make.left.equalToSuperview().offset(5)
+            make.right.equalToSuperview().offset(-5)
         }
        
         containerView.addSubview(positionLabel)
@@ -154,7 +176,6 @@ class StandingsCell: UITableViewCell {
         containerView.addSubview(pointsLabel)
         containerView.addSubview(flagImage)
 
-//        let spacing: CGFloat = 8
 
         positionLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
@@ -164,7 +185,6 @@ class StandingsCell: UITableViewCell {
         
         flagImage.snp.makeConstraints { make in
             make.leading.equalTo(positionLabel.snp.trailing).offset(12)
-//            make.top.equalTo(nameLabel.snp.bottom).offset(10)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(32)
         }
