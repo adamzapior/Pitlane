@@ -14,6 +14,16 @@ class StandingsVM {
     var driverStanding: [DriverStandingModel] = []
     var constructorStanding: [ConstructorStandingModel] = []
 
+    var highestPoints: Int?
+    
+    func updateHighestPoints() {
+            highestPoints = driverStanding.compactMap { Int($0.points) }.max()
+        }
+    
+    init() {
+        
+    }
+    
     func fetchStandings() async {
         do {
             async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStanding()
@@ -26,6 +36,7 @@ class StandingsVM {
             case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
                 driverStanding = fetchedDriverStandings
                 constructorStanding = fetchedConstructorStandings
+                updateHighestPoints()
 
                 delegate?.driverStandingDidUpdate(self, standing: driverStanding)
                 delegate?.constructorStandingDidUpdate(self, standing: constructorStanding)

@@ -104,7 +104,7 @@ class StandingsVC: UIViewController {
             frame: CGRect(x: 0,
                           y: 0,
                           width: tableView.bounds.width,
-                          height: 50)
+                          height: 60)
         )
 
         tableView.snp.makeConstraints { make in
@@ -121,7 +121,6 @@ class StandingsVC: UIViewController {
         errorLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview()
-
         }
     }
 
@@ -191,7 +190,7 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "StandingsCell", for: indexPath) as? StandingsCell else {
             fatalError("Custom cell error")
         }
-        cell.configure(with: vm.driverStanding[indexPath.row])
+        cell.configure(with: vm.driverStanding[indexPath.row], maxPoints: vm.highestPoints ?? 1)
         return cell
     }
 }

@@ -5,31 +5,65 @@
 //  Created by Adam Zapiór on 18/12/2022.
 //
 
+import FlagKit
+import SnapKit
 import UIKit
 
 class StandingsCell: UITableViewCell {
     static let identifier = "StandingsCell"
+    
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 12
+        ////        view.clipsToBounds = true
+//        view.backgroundColor = .lightGray
+        
+        return view
+    }()
+    
+    private let bar: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        view.layer.cornerRadius = 6
+        return view
+    }()
 
+    private let barBackground: UIView = {
+        let view = UIView()
+//            view.backgroundColor = .gray
+        return view
+    }()
+    
     private let positionLabel: UILabel = {
         let label = UILabel()
-
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
 
     private let nameLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
     }()
 
     private let surnameLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
     }()
 
     private let pointsLabel: UILabel = {
         let label = UILabel()
-
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
+    }()
+    
+    private let flagImage: UIImageView = {
+        let flag = UIImageView()
+        flag.layer.masksToBounds = true
+        flag.layer.cornerRadius = 6
+//        imageView.contentMode = .scaleAspectFit
+        return flag
     }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -43,41 +77,119 @@ class StandingsCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: DriverStandingModel) {
+    let countryMapping: [String: String] = [
+        "British": "GB",
+        "Mexican": "MX",
+        "Spanish": "ES",
+        "Monegasque": "MC",
+        "Australian": "AU",
+        "Canadian": "CA",
+        "French": "FR",
+        "Thai": "TH",
+        "Finnish": "FI",
+        "German": "DE",
+        "Chinese": "CN",
+        "Japanese": "JP",
+        "Danish": "DK",
+        "New Zealander": "NZ",
+        "American": "US",
+        "Dutch": "NL",
+        "Italian": "IT",
+        "Polish": "PL",
+        // ... dodaj pozostałe mapowania
+    ]
+    
+    func configure(with model: DriverStandingModel, maxPoints: Int) {
         positionLabel.text = model.position
         nameLabel.text = model.driver.givenName
         surnameLabel.text = model.driver.familyName
         pointsLabel.text = model.points
+        
+        if let countryCode = countryMapping[model.driver.nationality],
+           let flag = Flag(countryCode: countryCode)
+        {
+            flagImage.image = flag.image(style: .none)
+        } else {
+            flagImage.image = nil
+        }
+        
+        let maxPointsConverted = CGFloat(exactly: maxPoints)
+    
+        if let pointsInt = Int(model.points), let points = CGFloat(exactly: pointsInt) {
+            let ratio = points / maxPointsConverted!
+            adjustBarWidth(ratio: ratio)
+        } else {
+            adjustBarWidth(ratio: 0)
+        }
+    }
+    
+    private func adjustBarWidth(ratio: CGFloat) {
+        var minRatio: CGFloat = 0.03
+        
+        if ratio == 0 {
+            minRatio = 0
+        }
+        
+        let adjustedRatio = max(ratio, minRatio)
+        
+        barBackground.addSubview(bar)
+        bar.snp.remakeConstraints { make in
+            make.left.top.bottom.equalToSuperview()
+            make.width.equalTo(barBackground).multipliedBy(adjustedRatio)
+        }
+        layoutIfNeeded()
     }
 
     private func setupUI() {
-        addSubview(positionLabel)
-        addSubview(nameLabel)
-        addSubview(surnameLabel)
-        addSubview(pointsLabel)
+        addSubview(containerView)
+        containerView.snp.makeConstraints { make in
+            make.top.left.equalToSuperview().offset(5)
+            make.bottom.right.equalToSuperview().offset(-5)
+            make.width.height.equalTo(48)
+        }
+       
+        containerView.addSubview(positionLabel)
+        containerView.addSubview(nameLabel)
+        containerView.addSubview(surnameLabel)
+        containerView.addSubview(pointsLabel)
+        containerView.addSubview(flagImage)
 
-        let spacing: CGFloat = 8
+//        let spacing: CGFloat = 8
 
         positionLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(spacing)
+            make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
+            make.width.size.equalTo(24)
+        }
+        
+        flagImage.snp.makeConstraints { make in
+            make.leading.equalTo(positionLabel.snp.trailing).offset(12)
+//            make.top.equalTo(nameLabel.snp.bottom).offset(10)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(32)
         }
 
         nameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(positionLabel.snp.trailing).offset(spacing)
-            make.centerY.equalToSuperview()
+            make.leading.equalTo(flagImage.snp.trailing).offset(24)
+            make.bottom.equalTo(flagImage.snp.centerY).offset(-2)
         }
 
         surnameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(nameLabel.snp.trailing).offset(spacing)
-            make.centerY.equalToSuperview()
+            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
+            make.bottom.equalTo(flagImage.snp.centerY).offset(-2)
         }
 
         pointsLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-spacing)
+            make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
         }
+        
+        containerView.addSubview(barBackground)
+        barBackground.snp.makeConstraints { make in
+            make.leading.equalTo(flagImage.snp.trailing).offset(24)
+            make.bottom.equalTo(flagImage.snp.centerY).offset(12)
+            make.trailing.equalToSuperview().offset(-64)
+            make.height.equalTo(4)
+        }
     }
-
-   
 }
