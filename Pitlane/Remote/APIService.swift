@@ -10,9 +10,10 @@ import Foundation
 protocol APIServiceProtocol {
     static func url(_ query: String) -> String
     
+    static func getSchedule() -> String
+    
     static func getStandings(year: String, standingsType: StandingsType) -> String
     
-    static func getSchedule(year: String) -> String
 }
 
 class APIService: APIServiceProtocol  {
@@ -21,13 +22,19 @@ class APIService: APIServiceProtocol  {
         "https://ergast.com/api/f1/\(query).json"
     }
     
+    static func getSchedule() -> String {
+        url("current")
+    }
+    
     static func getStandings(year: String, standingsType: StandingsType) -> String {
         url("\(year)/\(standingsType.rawValue)")
     }
     
-    static func getSchedule(year: String) -> String {
-        url("\(year)")
-    }
+    // to edit
+//    static func getSchedule(year: String) -> String {
+//        url("\(year)")
+//    }
+
     
 }
 

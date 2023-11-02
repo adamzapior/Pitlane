@@ -209,6 +209,8 @@ class StandingsVC: UIViewController {
     }
 }
 
+// MARK: Table View Setup
+
 extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         switch displayedStandingType {
@@ -237,6 +239,8 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
         return 64
     }
 }
+
+// MARK: Delegate methods
 
 extension StandingsVC: StandingsVMDelegate {
     func constructorStandingDidUpdate(_: StandingsVM, standing _: [ConstructorStandingModel]) {

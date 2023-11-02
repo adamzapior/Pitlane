@@ -66,7 +66,7 @@ class StandingsCell: UITableViewCell {
 
         setupUI()
     }
-
+    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -142,8 +142,6 @@ class StandingsCell: UITableViewCell {
         }
     }
     
-    
-    
     private func adjustBarWidth(ratio: CGFloat) {
         var minRatio: CGFloat = 0.03
         
@@ -176,7 +174,6 @@ class StandingsCell: UITableViewCell {
         containerView.addSubview(pointsLabel)
         containerView.addSubview(flagImage)
 
-
         positionLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
@@ -184,19 +181,20 @@ class StandingsCell: UITableViewCell {
         }
         
         flagImage.snp.makeConstraints { make in
-            make.leading.equalTo(positionLabel.snp.trailing).offset(12)
+            make.leading.equalTo(positionLabel.snp.trailing).offset(6)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(32)
+            make.height.equalTo(24)
+            make.width.equalTo(28)
         }
 
         nameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(flagImage.snp.trailing).offset(24)
-            make.bottom.equalTo(flagImage.snp.centerY).offset(-2)
+            make.leading.equalTo(flagImage.snp.trailing).offset(18)
+            make.bottom.equalTo(flagImage.snp.centerY).offset(2)
         }
 
         surnameLabel.snp.makeConstraints { make in
             make.leading.equalTo(nameLabel.snp.trailing).offset(4)
-            make.bottom.equalTo(flagImage.snp.centerY).offset(-2)
+            make.bottom.equalTo(flagImage.snp.centerY).offset(2)
         }
 
         pointsLabel.snp.makeConstraints { make in
@@ -206,8 +204,8 @@ class StandingsCell: UITableViewCell {
         
         containerView.addSubview(barBackground)
         barBackground.snp.makeConstraints { make in
-            make.leading.equalTo(flagImage.snp.trailing).offset(24)
-            make.bottom.equalTo(flagImage.snp.centerY).offset(12)
+            make.leading.equalTo(flagImage.snp.trailing).offset(18)
+            make.bottom.equalTo(flagImage.snp.centerY).offset(14)
             make.trailing.equalToSuperview().offset(-64)
             make.height.equalTo(4)
         }

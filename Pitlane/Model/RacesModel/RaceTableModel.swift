@@ -28,7 +28,7 @@ struct RaceModel: Codable {
     let thirdPractice: PracticeDataModel?
     let qualifying: PracticeDataModel
     let sprint: PracticeDataModel?
-    let results: [ResultModel]
+//    let results: [ResultModel]
 
 
     enum CodingKeys: String, CodingKey {
@@ -40,7 +40,7 @@ struct RaceModel: Codable {
         case thirdPractice = "ThirdPractice"
         case qualifying = "Qualifying"
         case sprint = "Sprint"
-        case results = "Results"
+//        case results = "Results"
     }
 }
 

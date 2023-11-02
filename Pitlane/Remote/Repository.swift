@@ -23,7 +23,7 @@ class Repository {
             return .failure(error)
         }
     }
-    
+
     func getConstructorStanding() async -> NetworkResult<[ConstructorStandingModel]> {
         let result: NetworkResult<F1ApiModel> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .constructorStandings))
         switch result {
@@ -34,6 +34,19 @@ class Repository {
                 return .failure(NetworkError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
             }
             return .success(constructorStanding)
+        case .failure(let error):
+            return .failure(error)
+        }
+    }
+
+    func getSchedule() async -> NetworkResult<[RaceModel]> {
+        let result: NetworkResult<F1ApiModel> = await APIHandler.get(APIService.getSchedule())
+        switch result {
+        case .success(let f1ApiModel):
+            guard let raceTable = f1ApiModel.f1Data.raceTable?.races else {
+                return .failure(NetworkError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
+            }
+            return .success(raceTable)
         case .failure(let error):
             return .failure(error)
         }
