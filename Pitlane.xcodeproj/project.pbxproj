@@ -24,6 +24,7 @@
 		587ACB792ADF347300BAF0E8 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 587ACB782ADF347300BAF0E8 /* SnapKit */; };
 		589329712AE5C95F00FB89A5 /* ScheduleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589329702AE5C95F00FB89A5 /* ScheduleVM.swift */; };
 		589329732AEBE67900FB89A5 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589329722AEBE67900FB89A5 /* ScheduleCell.swift */; };
+		589FA1912AF578AE009BC259 /* ScheduleDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589FA1902AF578AE009BC259 /* ScheduleDetailsVC.swift */; };
 		58BB13492ABEE93D004AA116 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BB13482ABEE93C004AA116 /* Repository.swift */; };
 		58D500892A176DA700D5E10E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D500882A176DA700D5E10E /* AppDelegate.swift */; };
 		58D5008B2A176DA700D5E10E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D5008A2A176DA700D5E10E /* SceneDelegate.swift */; };
@@ -64,6 +65,7 @@
 		58601C6D2ABE6B740055B53B /* APIHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandler.swift; sourceTree = "<group>"; };
 		589329702AE5C95F00FB89A5 /* ScheduleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleVM.swift; sourceTree = "<group>"; };
 		589329722AEBE67900FB89A5 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
+		589FA1902AF578AE009BC259 /* ScheduleDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDetailsVC.swift; sourceTree = "<group>"; };
 		58BB13482ABEE93C004AA116 /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		58D500852A176DA700D5E10E /* Pitlane.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pitlane.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58D500882A176DA700D5E10E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -95,8 +97,8 @@
 		580F7C402AC0CF6300E6DD88 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				580F7C412AC0CF7E00E6DD88 /* StandingsVM.swift */,
 				589329702AE5C95F00FB89A5 /* ScheduleVM.swift */,
+				580F7C412AC0CF7E00E6DD88 /* StandingsVM.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -206,8 +208,9 @@
 			isa = PBXGroup;
 			children = (
 				58D500BC2A176E7500D5E10E /* ScheduleVC.swift */,
-				580B166F2A183300006A8E76 /* StandingsVC.swift */,
+				589FA1902AF578AE009BC259 /* ScheduleDetailsVC.swift */,
 				58D500BB2A176E7500D5E10E /* ResultsVC.swift */,
+				580B166F2A183300006A8E76 /* StandingsVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				58601C6C2ABE693B0055B53B /* APIService.swift in Sources */,
 				58601C5C2ABE3C620055B53B /* StandingsModel.swift in Sources */,
 				58BB13492ABEE93D004AA116 /* Repository.swift in Sources */,
+				589FA1912AF578AE009BC259 /* ScheduleDetailsVC.swift in Sources */,
 				58D500B92A176E5100D5E10E /* UIHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

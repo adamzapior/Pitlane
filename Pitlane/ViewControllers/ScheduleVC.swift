@@ -43,7 +43,6 @@ class ScheduleVC: UIViewController {
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.top.left.right.bottom.equalToSuperview()
         }
     }
@@ -56,6 +55,16 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         return ScheduleType.allCases.count
     }
     
+    func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let scheduleType = ScheduleType.allCases[section]
+        switch scheduleType {
+        case .future:
+            return "Future Races"
+        case .past:
+            return "Past Races"
+        }
+    }
+    
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         let scheduleType = ScheduleType.allCases[section]
         switch scheduleType {
@@ -65,7 +74,7 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
             return vm.pastRaces.count
         }
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell", for: indexPath) as? ScheduleCell else {
             fatalError("Custom cell error")
@@ -82,14 +91,22 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let scheduleType = ScheduleType.allCases[section]
+    func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let scheduleType = ScheduleType.allCases[indexPath.section]
+        let race: RaceModel
+
         switch scheduleType {
         case .future:
-            return "Future Races"
+            race = vm.futureRaces[indexPath.row]
         case .past:
-            return "Past Races"
+            race = vm.pastRaces[indexPath.row]
         }
+        
+        let detailsVC = ScheduleDetailsVC()
+        detailsVC.race = race
+        
+        navigationController?.pushViewController(detailsVC, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
