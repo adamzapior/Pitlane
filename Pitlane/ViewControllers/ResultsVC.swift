@@ -15,7 +15,7 @@ class ResultsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.UI.background
         navigationController?.navigationBar.prefersLargeTitles = true
         
     }

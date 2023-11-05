@@ -9,10 +9,40 @@ import FlagKit
 import UIKit
 
 class ScheduleCell: UITableViewCell {
+    
+    // MARK: - Variables
+    
     static let identifier = "ScheduleCell"
 
     var cellType: CellType = .future
+    
+    let countryMapping: [String: String] = [
+        "Bahrain": "BH",
+        "Saudi Arabia": "SA",
+        "Australia": "AU",
+        "Azerbaijan": "AZ",
+        "USA": "US",
+        "Monaco": "MC",
+        "Spain": "ES",
+        "Canada": "CA",
+        "Austria": "AT",
+        "UK": "UK",
+        "Hungary": "HU",
+        "Belgium": "BE",
+        "Netherlands": "NL",
+        "Italy": "IT",
+        "Singapore": "SG",
+        "Japan": "JP",
+        "Qatar": "QA",
+        "Mexico": "MX",
+        "Brazil": "BR",
+        "United States": "US",
+        "UAE": "AE",
+    ]
 
+
+    // MARK: - UI Components
+    
     private let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
@@ -43,6 +73,8 @@ class ScheduleCell: UITableViewCell {
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
+    
+    // MARK: - Lifecycle
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -65,29 +97,7 @@ class ScheduleCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    let countryMapping: [String: String] = [
-        "Bahrain": "BH",
-        "Saudi Arabia": "SA",
-        "Australia": "AU",
-        "Azerbaijan": "AZ",
-        "USA": "US",
-        "Monaco": "MC",
-        "Spain": "ES",
-        "Canada": "CA",
-        "Austria": "AT",
-        "UK": "UK",
-        "Hungary": "HU",
-        "Belgium": "BE",
-        "Netherlands": "NL",
-        "Italy": "IT",
-        "Singapore": "SG",
-        "Japan": "JP",
-        "Qatar": "QA",
-        "Mexico": "MX",
-        "Brazil": "BR",
-        "United States": "US",
-        "UAE": "AE",
-    ]
+    // MARK: - UI Setup
 
     func configure(with model: RaceModel, type: CellType) {
         cellType = type
@@ -121,8 +131,9 @@ class ScheduleCell: UITableViewCell {
     private func setupUI() {
         addSubview(containerView)
         containerView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(32)
-            make.bottom.equalToSuperview().offset(-32)
+            make.centerY.equalToSuperview()
+//            make.top.equalToSuperview().offset(32.VAdapted)
+//            make.bottom.equalToSuperview().offset(-32.VAdapted)
             make.left.equalToSuperview().offset(5)
             make.right.equalToSuperview().offset(-5)
         }
@@ -135,8 +146,10 @@ class ScheduleCell: UITableViewCell {
         flagImage.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(18)
             make.centerY.equalToSuperview()
-            make.height.equalTo(24)
-            make.width.equalTo(28)
+            make.size.equalTo(CGSize(width: 28, height: 24))
+//            make.size.equalTo([28, 24].HResized)
+//            make.height.equalTo(24)
+//            make.width.equalTo(28)
         }
 
         raceLabel.snp.makeConstraints { make in

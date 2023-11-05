@@ -39,13 +39,13 @@ class StandingsVC: UIViewController {
 
     private let tableViewHeader: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.UI.background
         return view
     }()
 
     private let tableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .systemBackground
+        tableView.backgroundColor = UIColor.UI.background
         tableView.allowsSelection = true
         tableView.register(StandingsCell.self, forCellReuseIdentifier: StandingsCell.identifier)
         tableView.isHidden = true

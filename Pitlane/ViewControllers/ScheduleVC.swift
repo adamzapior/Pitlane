@@ -13,7 +13,7 @@ class ScheduleVC: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .systemBackground
+        tableView.backgroundColor = UIColor.UI.background
         tableView.allowsSelection = true
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identifier)
         tableView.isHidden = true
@@ -37,7 +37,7 @@ class ScheduleVC: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.UI.background
         title = "Schedule"
         navigationController?.navigationBar.prefersLargeTitles = true
         
