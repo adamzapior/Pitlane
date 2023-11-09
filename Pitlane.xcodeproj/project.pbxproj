@@ -37,7 +37,9 @@
 		58D500BE2A176E7500D5E10E /* ScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D500BC2A176E7500D5E10E /* ScheduleVC.swift */; };
 		58F4D8DB2AF7D1B8002E4E3E /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8DA2AF7D1B8002E4E3E /* ColorTheme.swift */; };
 		58F4D8DD2AF80927002E4E3E /* TimetableItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8DC2AF80927002E4E3E /* TimetableItemView.swift */; };
-		58F4D8E02AF81468002E4E3E /* ScheduleTimetableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8DF2AF81468002E4E3E /* ScheduleTimetableView.swift */; };
+		58F4D8E32AF9B926002E4E3E /* StringDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E22AF9B926002E4E3E /* StringDateFormatter.swift */; };
+		58F4D8E52AFC70CF002E4E3E /* LocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E42AFC70CF002E4E3E /* LocationInfoView.swift */; };
+		58F4D8E72AFC85EA002E4E3E /* CountryFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E62AFC85EA002E4E3E /* CountryFlagProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -83,7 +85,9 @@
 		58D500BC2A176E7500D5E10E /* ScheduleVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleVC.swift; sourceTree = "<group>"; };
 		58F4D8DA2AF7D1B8002E4E3E /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		58F4D8DC2AF80927002E4E3E /* TimetableItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableItemView.swift; sourceTree = "<group>"; };
-		58F4D8DF2AF81468002E4E3E /* ScheduleTimetableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTimetableView.swift; sourceTree = "<group>"; };
+		58F4D8E22AF9B926002E4E3E /* StringDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDateFormatter.swift; sourceTree = "<group>"; };
+		58F4D8E42AFC70CF002E4E3E /* LocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoView.swift; sourceTree = "<group>"; };
+		58F4D8E62AFC85EA002E4E3E /* CountryFlagProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryFlagProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +180,7 @@
 				58D500BA2A176E7500D5E10E /* ViewControllers */,
 				58D5009E2A176E2200D5E10E /* Views */,
 				58D500B52A176E5100D5E10E /* Utillities */,
+				58F4D8E12AF8E1A6002E4E3E /* Extensions */,
 				58D500882A176DA700D5E10E /* AppDelegate.swift */,
 				58D5008A2A176DA700D5E10E /* SceneDelegate.swift */,
 				58D500912A176DA900D5E10E /* Assets.xcassets */,
@@ -205,6 +210,8 @@
 		58D500B52A176E5100D5E10E /* Utillities */ = {
 			isa = PBXGroup;
 			children = (
+				58F4D8E22AF9B926002E4E3E /* StringDateFormatter.swift */,
+				58F4D8E62AFC85EA002E4E3E /* CountryFlagProvider.swift */,
 				58F4D8DA2AF7D1B8002E4E3E /* ColorTheme.swift */,
 				58824D6E2AF7BC8200BA7839 /* AdaptiveLayoutHelper.swift */,
 			);
@@ -226,10 +233,17 @@
 			isa = PBXGroup;
 			children = (
 				58824D6C2AF6D9E300BA7839 /* ScheduleInfoView.swift */,
-				58F4D8DF2AF81468002E4E3E /* ScheduleTimetableView.swift */,
 				58F4D8DC2AF80927002E4E3E /* TimetableItemView.swift */,
+				58F4D8E42AFC70CF002E4E3E /* LocationInfoView.swift */,
 			);
 			path = Schedule;
+			sourceTree = "<group>";
+		};
+		58F4D8E12AF8E1A6002E4E3E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -316,6 +330,7 @@
 				58601C6E2ABE6B740055B53B /* APIHandler.swift in Sources */,
 				58D500BE2A176E7500D5E10E /* ScheduleVC.swift in Sources */,
 				58601C642ABE632F0055B53B /* ConstructorModel.swift in Sources */,
+				58F4D8E32AF9B926002E4E3E /* StringDateFormatter.swift in Sources */,
 				580B16702A183300006A8E76 /* StandingsVC.swift in Sources */,
 				58D500892A176DA700D5E10E /* AppDelegate.swift in Sources */,
 				58D5008B2A176DA700D5E10E /* SceneDelegate.swift in Sources */,
@@ -328,14 +343,15 @@
 				58601C602ABE489C0055B53B /* ResultsDto.swift in Sources */,
 				58601C5E2ABE44EE0055B53B /* RaceTableModel.swift in Sources */,
 				58F4D8DD2AF80927002E4E3E /* TimetableItemView.swift in Sources */,
+				58F4D8E72AFC85EA002E4E3E /* CountryFlagProvider.swift in Sources */,
 				58824D6D2AF6D9E300BA7839 /* ScheduleInfoView.swift in Sources */,
+				58F4D8E52AFC70CF002E4E3E /* LocationInfoView.swift in Sources */,
 				58D500BD2A176E7500D5E10E /* ResultsVC.swift in Sources */,
 				58D500A72A176E2300D5E10E /* StandingsCell.swift in Sources */,
 				58D5009D2A176E0A00D5E10E /* MainTabBarVC.swift in Sources */,
 				58601C6A2ABE66720055B53B /* LocationModel.swift in Sources */,
 				58601C622ABE63200055B53B /* DriverModel.swift in Sources */,
 				58601C6C2ABE693B0055B53B /* APIService.swift in Sources */,
-				58F4D8E02AF81468002E4E3E /* ScheduleTimetableView.swift in Sources */,
 				58F4D8DB2AF7D1B8002E4E3E /* ColorTheme.swift in Sources */,
 				58601C5C2ABE3C620055B53B /* StandingsModel.swift in Sources */,
 				58BB13492ABEE93D004AA116 /* Repository.swift in Sources */,

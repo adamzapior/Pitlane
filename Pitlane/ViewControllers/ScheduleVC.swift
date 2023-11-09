@@ -11,14 +11,7 @@ import UIKit
 class ScheduleVC: UIViewController {
     var vm = ScheduleVM()
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = UIColor.UI.background
-        tableView.allowsSelection = true
-        tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identifier)
-        tableView.isHidden = true
-        return tableView
-    }()
+    private let tableView = UITableView()
     
     // MARK: Lifecycle
 
@@ -26,9 +19,8 @@ class ScheduleVC: UIViewController {
         super.viewDidLoad()
         
         vm.delegate = self
-        tableView.dataSource = self
-        tableView.delegate = self
         
+        setupTableView()
         setupUI()
         
         Task {
@@ -36,8 +28,17 @@ class ScheduleVC: UIViewController {
         }
     }
     
+    private func setupTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.backgroundColor = .systemBackground
+        tableView.allowsSelection = true
+        tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identifier)
+        tableView.isHidden = true
+    }
+    
     private func setupUI() {
-        view.backgroundColor = UIColor.UI.background
+        view.backgroundColor = .systemBackground
         title = "Schedule"
         navigationController?.navigationBar.prefersLargeTitles = true
         

@@ -10,27 +10,8 @@ import SnapKit
 import UIKit
 
 class ScheduleInfoView: UIView {
-    // MARK: - UI Components
-
-    private let titleTextLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .regular)
-        label.adjustsFontForContentSizeCategory = true
-        label.textColor = .UI.secondaryText
-        return label
-    }()
-    
-    private let valueTextLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .semibold)
-        label.adjustsFontForContentSizeCategory = true
-        label.textColor = .UI.primaryText
-        return label
-    }()
-    
-    // MARK: - Lifecycle
+    private let titleTextLabel = UILabel()
+    private let valueTextLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,9 +22,7 @@ class ScheduleInfoView: UIView {
         super.init(coder: aDecoder)
     }
     
-    // MARK: - UI Setup
-    
-    func configureText(titleText: String, valueText: String) {
+    func configure(titleText: String, valueText: String) {
         titleTextLabel.text = titleText
         valueTextLabel.text = valueText
     }
@@ -53,12 +32,17 @@ class ScheduleInfoView: UIView {
         layer.cornerRadius = 10
         clipsToBounds = true
         
-        setupTitleText()
-        setupValueText()
+        setupTitleTextLabel()
+        setupValueTextLabel()
     }
     
-    private func setupTitleText() {
+    private func setupTitleTextLabel() {
         addSubview(titleTextLabel)
+        
+        titleTextLabel.numberOfLines = 0
+        titleTextLabel.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .regular)
+        titleTextLabel.adjustsFontForContentSizeCategory = true
+        titleTextLabel.textColor = .UI.secondaryText
         
         titleTextLabel.snp.makeConstraints { make in
             make.top.equalTo(self.snp.top).offset(12)
@@ -67,8 +51,13 @@ class ScheduleInfoView: UIView {
         }
     }
     
-    private func setupValueText() {
+    private func setupValueTextLabel() {
         addSubview(valueTextLabel)
+        
+        valueTextLabel.numberOfLines = 0
+        valueTextLabel.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .semibold)
+        valueTextLabel.adjustsFontForContentSizeCategory = true
+        valueTextLabel.textColor = .UI.primaryText
         
         valueTextLabel.snp.makeConstraints { make in
             make.top.equalTo(titleTextLabel.snp.bottom).offset(8)

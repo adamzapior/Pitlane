@@ -19,17 +19,6 @@ class StandingsVC: UIViewController {
         return icon
     }()
 
-    // Based on: https://www.uptech.team/blog/build-resizing-image-in-navigation-bar-with-large-title
-    private enum Const {
-        static let ImageSizeForLargeState: CGFloat = 36 /// Image height/width for Large NavBar state
-        static let ImageRightMargin: CGFloat = 16 /// Margin from right anchor of safe area to right anchor of Image
-        static let ImageBottomMarginForLargeState: CGFloat = 12 /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state
-        static let ImageBottomMarginForSmallState: CGFloat = 12 /// Margin from bottom anchor of NavBar to bottom anchor of Image for Small NavBar state
-        static let ImageSizeForSmallState: CGFloat = 28 /// Image height/width for Small NavBar state
-        static let NavBarHeightSmallState: CGFloat = 44 /// Height of NavBar for Small state. Usually it's just 44
-        static let NavBarHeightLargeState: CGFloat = 96.5 /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
-    }
-
     private let activityIndicator: UIActivityIndicatorView = {
         let ai = UIActivityIndicatorView()
         ai.style = .large
@@ -43,8 +32,10 @@ class StandingsVC: UIViewController {
         return view
     }()
 
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.backgroundColor = UIColor.UI.background
         tableView.allowsSelection = true
         tableView.register(StandingsCell.self, forCellReuseIdentifier: StandingsCell.identifier)
@@ -67,8 +58,6 @@ class StandingsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         vm.delegate = self
-        tableView.delegate = self
-        tableView.dataSource = self
 
         setupUI()
         activityIndicator.startAnimating()
@@ -147,6 +136,22 @@ class StandingsVC: UIViewController {
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview()
         }
+    }
+    
+    private func setupTableView() {
+        
+    }
+    
+    private func setupTableViewHeader() {
+        
+    }
+    
+    private func setupActivityIndicator() {
+        
+    }
+    
+    private func setupErrorLabel() {
+        
     }
 
     // Based on: https://www.uptech.team/blog/build-resizing-image-in-navigation-bar-with-large-title
@@ -278,3 +283,15 @@ private enum DisplayedStandingType {
     case driver
     case constructor
 }
+
+// Based on: https://www.uptech.team/blog/build-resizing-image-in-navigation-bar-with-large-title
+private enum Const {
+    static let ImageSizeForLargeState: CGFloat = 36 /// Image height/width for Large NavBar state
+    static let ImageRightMargin: CGFloat = 16 /// Margin from right anchor of safe area to right anchor of Image
+    static let ImageBottomMarginForLargeState: CGFloat = 12 /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state
+    static let ImageBottomMarginForSmallState: CGFloat = 12 /// Margin from bottom anchor of NavBar to bottom anchor of Image for Small NavBar state
+    static let ImageSizeForSmallState: CGFloat = 28 /// Image height/width for Small NavBar state
+    static let NavBarHeightSmallState: CGFloat = 44 /// Height of NavBar for Small state. Usually it's just 44
+    static let NavBarHeightLargeState: CGFloat = 96.5 /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
+}
+

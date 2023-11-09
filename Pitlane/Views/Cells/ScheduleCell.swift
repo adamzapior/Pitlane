@@ -9,13 +9,12 @@ import FlagKit
 import UIKit
 
 class ScheduleCell: UITableViewCell {
-    
     // MARK: - Variables
-    
+
     static let identifier = "ScheduleCell"
 
     var cellType: CellType = .future
-    
+
     let countryMapping: [String: String] = [
         "Bahrain": "BH",
         "Saudi Arabia": "SA",
@@ -40,9 +39,8 @@ class ScheduleCell: UITableViewCell {
         "UAE": "AE",
     ]
 
-
     // MARK: - UI Components
-    
+
     private let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
@@ -73,7 +71,7 @@ class ScheduleCell: UITableViewCell {
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
-    
+
     // MARK: - Lifecycle
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -81,7 +79,7 @@ class ScheduleCell: UITableViewCell {
 
         setupUI()
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         switch cellType {
@@ -91,7 +89,7 @@ class ScheduleCell: UITableViewCell {
             layer.opacity = 0.5
         }
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -103,37 +101,15 @@ class ScheduleCell: UITableViewCell {
         cellType = type
         raceLabel.text = model.raceName
         circuitLabel.text = "\(model.round) - \(model.circuit.circuitName)"
-        dateLabel.text = formatDate(dateString: model.date)
+        dateLabel.text = model.date.scheduleDateFormatter()
 
-        if let countryCode = countryMapping[model.circuit.location.country],
-           let flag = Flag(countryCode: countryCode)
-        {
-            flagImage.image = flag.image(style: .none)
-        } else {
-            flagImage.image = nil
-        }
-    }
-
-    private func formatDate(dateString: String) -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
-
-        if let date = inputFormatter.date(from: dateString) {
-            let outputFormatter = DateFormatter()
-            outputFormatter.dateFormat = "dd MMM"
-            outputFormatter.locale = Locale(identifier: "en_US_POSIX")
-            return outputFormatter.string(from: date).uppercased()
-        } else {
-            return ""
-        }
+        flagImage.image = CountryFlagProvider.shared.countryFlag(for: model.circuit.location.country)
     }
 
     private func setupUI() {
         addSubview(containerView)
         containerView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-//            make.top.equalToSuperview().offset(32.VAdapted)
-//            make.bottom.equalToSuperview().offset(-32.VAdapted)
             make.left.equalToSuperview().offset(5)
             make.right.equalToSuperview().offset(-5)
         }
@@ -147,9 +123,6 @@ class ScheduleCell: UITableViewCell {
             make.leading.equalToSuperview().offset(18)
             make.centerY.equalToSuperview()
             make.size.equalTo(CGSize(width: 28, height: 24))
-//            make.size.equalTo([28, 24].HResized)
-//            make.height.equalTo(24)
-//            make.width.equalTo(28)
         }
 
         raceLabel.snp.makeConstraints { make in

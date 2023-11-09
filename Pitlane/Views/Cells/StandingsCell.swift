@@ -72,41 +72,13 @@ class StandingsCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let countryMapping: [String: String] = [
-        "Austrian": "AT",
-        "Swiss": "CH",
-        "British": "GB",
-        "Mexican": "MX",
-        "Spanish": "ES",
-        "Monegasque": "MC",
-        "Australian": "AU",
-        "Canadian": "CA",
-        "French": "FR",
-        "Thai": "TH",
-        "Finnish": "FI",
-        "German": "DE",
-        "Chinese": "CN",
-        "Japanese": "JP",
-        "Danish": "DK",
-        "New Zealander": "NZ",
-        "American": "US",
-        "Dutch": "NL",
-        "Italian": "IT",
-    ]
-    
     func configureDriverCell(with model: DriverStandingModel, maxPoints: Int) {
         positionLabel.text = model.position
         nameLabel.text = model.driver.givenName
         surnameLabel.text = model.driver.familyName
         pointsLabel.text = model.points
         
-        if let countryCode = countryMapping[model.driver.nationality],
-           let flag = Flag(countryCode: countryCode)
-        {
-            flagImage.image = flag.image(style: .none)
-        } else {
-            flagImage.image = nil
-        }
+        flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
         
         let maxPointsConverted = CGFloat(exactly: maxPoints)
     
@@ -124,13 +96,7 @@ class StandingsCell: UITableViewCell {
         surnameLabel.text = ""
         pointsLabel.text = model.points
         
-        if let countryCode = countryMapping[model.constructor.nationality],
-           let flag = Flag(countryCode: countryCode)
-        {
-            flagImage.image = flag.image(style: .none)
-        } else {
-            flagImage.image = nil
-        }
+        flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.constructor.nationality)
         
         let maxPointsConverted = CGFloat(exactly: maxPoints)
     
