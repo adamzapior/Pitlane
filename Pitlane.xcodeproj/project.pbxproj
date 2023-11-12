@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		580B16702A183300006A8E76 /* StandingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580B166F2A183300006A8E76 /* StandingsVC.swift */; };
-		580F7C422AC0CF7E00E6DD88 /* StandingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580F7C412AC0CF7E00E6DD88 /* StandingsVM.swift */; };
 		58601C5A2ABE361F0055B53B /* F1ApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58601C592ABE361F0055B53B /* F1ApiModel.swift */; };
 		58601C5C2ABE3C620055B53B /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58601C5B2ABE3C620055B53B /* StandingsModel.swift */; };
 		58601C5E2ABE44EE0055B53B /* RaceTableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58601C5D2ABE44EE0055B53B /* RaceTableModel.swift */; };
@@ -22,10 +21,25 @@
 		587ACB6E2ADF338600BAF0E8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 587ACB6D2ADF338600BAF0E8 /* Alamofire */; };
 		587ACB762ADF33A500BAF0E8 /* FlagKit in Frameworks */ = {isa = PBXBuildFile; productRef = 587ACB752ADF33A500BAF0E8 /* FlagKit */; };
 		587ACB792ADF347300BAF0E8 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 587ACB782ADF347300BAF0E8 /* SnapKit */; };
-		58824D6D2AF6D9E300BA7839 /* ScheduleInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58824D6C2AF6D9E300BA7839 /* ScheduleInfoView.swift */; };
+		58824D6D2AF6D9E300BA7839 /* ScheduleDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58824D6C2AF6D9E300BA7839 /* ScheduleDetailsView.swift */; };
 		58824D6F2AF7BC8200BA7839 /* AdaptiveLayoutHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58824D6E2AF7BC8200BA7839 /* AdaptiveLayoutHelper.swift */; };
-		589329712AE5C95F00FB89A5 /* ScheduleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589329702AE5C95F00FB89A5 /* ScheduleVM.swift */; };
 		589329732AEBE67900FB89A5 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589329722AEBE67900FB89A5 /* ScheduleCell.swift */; };
+		589925002AFE371A006D632C /* ResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589924FF2AFE371A006D632C /* ResultCell.swift */; };
+		589925032AFFA1B0006D632C /* F1ApiDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925022AFFA1B0006D632C /* F1ApiDto.swift */; };
+		589925052AFFA2D4006D632C /* CircuitDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925042AFFA2D4006D632C /* CircuitDto.swift */; };
+		589925072AFFA3DA006D632C /* LocationDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925062AFFA3DA006D632C /* LocationDto.swift */; };
+		589925092AFFA59C006D632C /* DriverDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925082AFFA59C006D632C /* DriverDto.swift */; };
+		5899250B2AFFA5A8006D632C /* ConstructorDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5899250A2AFFA5A8006D632C /* ConstructorDto.swift */; };
+		5899250D2AFFB88E006D632C /* RaceResultDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5899250C2AFFB88E006D632C /* RaceResultDto.swift */; };
+		5899250F2AFFC8BE006D632C /* ScheduleDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5899250E2AFFC8BE006D632C /* ScheduleDto.swift */; };
+		589925112AFFCFE2006D632C /* DriverStandingDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925102AFFCFE2006D632C /* DriverStandingDto.swift */; };
+		589925132AFFD000006D632C /* ConstructorStandingDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925122AFFD000006D632C /* ConstructorStandingDto.swift */; };
+		589925162B004477006D632C /* QualifyingResultDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925152B004477006D632C /* QualifyingResultDto.swift */; };
+		589925182B00448B006D632C /* SprintResultDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925172B00448B006D632C /* SprintResultDto.swift */; };
+		5899251B2B005E34006D632C /* ScheduleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5899251A2B005E34006D632C /* ScheduleModel.swift */; };
+		5899251D2B0061B5006D632C /* RaceResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5899251C2B0061B5006D632C /* RaceResultModel.swift */; };
+		5899251F2B0061C5006D632C /* SprintResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5899251E2B0061C5006D632C /* SprintResultModel.swift */; };
+		589925212B0061DF006D632C /* QualifyingResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589925202B0061DF006D632C /* QualifyingResultModel.swift */; };
 		589FA1912AF578AE009BC259 /* ScheduleDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589FA1902AF578AE009BC259 /* ScheduleDetailsVC.swift */; };
 		58BB13492ABEE93D004AA116 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BB13482ABEE93C004AA116 /* Repository.swift */; };
 		58D500892A176DA700D5E10E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D500882A176DA700D5E10E /* AppDelegate.swift */; };
@@ -36,9 +50,9 @@
 		58D500BD2A176E7500D5E10E /* ResultsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D500BB2A176E7500D5E10E /* ResultsVC.swift */; };
 		58D500BE2A176E7500D5E10E /* ScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D500BC2A176E7500D5E10E /* ScheduleVC.swift */; };
 		58F4D8DB2AF7D1B8002E4E3E /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8DA2AF7D1B8002E4E3E /* ColorTheme.swift */; };
-		58F4D8DD2AF80927002E4E3E /* TimetableItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8DC2AF80927002E4E3E /* TimetableItemView.swift */; };
+		58F4D8DD2AF80927002E4E3E /* ScheduleTimetableItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8DC2AF80927002E4E3E /* ScheduleTimetableItemView.swift */; };
 		58F4D8E32AF9B926002E4E3E /* StringDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E22AF9B926002E4E3E /* StringDateFormatter.swift */; };
-		58F4D8E52AFC70CF002E4E3E /* LocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E42AFC70CF002E4E3E /* LocationInfoView.swift */; };
+		58F4D8E52AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E42AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift */; };
 		58F4D8E72AFC85EA002E4E3E /* CountryFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F4D8E62AFC85EA002E4E3E /* CountryFlagProvider.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,7 +71,6 @@
 
 /* Begin PBXFileReference section */
 		580B166F2A183300006A8E76 /* StandingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsVC.swift; sourceTree = "<group>"; };
-		580F7C412AC0CF7E00E6DD88 /* StandingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsVM.swift; sourceTree = "<group>"; };
 		58601C592ABE361F0055B53B /* F1ApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = F1ApiModel.swift; sourceTree = "<group>"; };
 		58601C5B2ABE3C620055B53B /* StandingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsModel.swift; sourceTree = "<group>"; };
 		58601C5D2ABE44EE0055B53B /* RaceTableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceTableModel.swift; sourceTree = "<group>"; };
@@ -68,10 +81,25 @@
 		58601C692ABE66720055B53B /* LocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
 		58601C6B2ABE693B0055B53B /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		58601C6D2ABE6B740055B53B /* APIHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandler.swift; sourceTree = "<group>"; };
-		58824D6C2AF6D9E300BA7839 /* ScheduleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleInfoView.swift; sourceTree = "<group>"; };
+		58824D6C2AF6D9E300BA7839 /* ScheduleDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDetailsView.swift; sourceTree = "<group>"; };
 		58824D6E2AF7BC8200BA7839 /* AdaptiveLayoutHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLayoutHelper.swift; sourceTree = "<group>"; };
-		589329702AE5C95F00FB89A5 /* ScheduleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleVM.swift; sourceTree = "<group>"; };
 		589329722AEBE67900FB89A5 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
+		589924FF2AFE371A006D632C /* ResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCell.swift; sourceTree = "<group>"; };
+		589925022AFFA1B0006D632C /* F1ApiDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = F1ApiDto.swift; sourceTree = "<group>"; };
+		589925042AFFA2D4006D632C /* CircuitDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircuitDto.swift; sourceTree = "<group>"; };
+		589925062AFFA3DA006D632C /* LocationDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDto.swift; sourceTree = "<group>"; };
+		589925082AFFA59C006D632C /* DriverDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDto.swift; sourceTree = "<group>"; };
+		5899250A2AFFA5A8006D632C /* ConstructorDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstructorDto.swift; sourceTree = "<group>"; };
+		5899250C2AFFB88E006D632C /* RaceResultDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceResultDto.swift; sourceTree = "<group>"; };
+		5899250E2AFFC8BE006D632C /* ScheduleDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDto.swift; sourceTree = "<group>"; };
+		589925102AFFCFE2006D632C /* DriverStandingDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverStandingDto.swift; sourceTree = "<group>"; };
+		589925122AFFD000006D632C /* ConstructorStandingDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstructorStandingDto.swift; sourceTree = "<group>"; };
+		589925152B004477006D632C /* QualifyingResultDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QualifyingResultDto.swift; sourceTree = "<group>"; };
+		589925172B00448B006D632C /* SprintResultDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SprintResultDto.swift; sourceTree = "<group>"; };
+		5899251A2B005E34006D632C /* ScheduleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModel.swift; sourceTree = "<group>"; };
+		5899251C2B0061B5006D632C /* RaceResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceResultModel.swift; sourceTree = "<group>"; };
+		5899251E2B0061C5006D632C /* SprintResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SprintResultModel.swift; sourceTree = "<group>"; };
+		589925202B0061DF006D632C /* QualifyingResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QualifyingResultModel.swift; sourceTree = "<group>"; };
 		589FA1902AF578AE009BC259 /* ScheduleDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDetailsVC.swift; sourceTree = "<group>"; };
 		58BB13482ABEE93C004AA116 /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		58D500852A176DA700D5E10E /* Pitlane.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pitlane.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,9 +112,9 @@
 		58D500BB2A176E7500D5E10E /* ResultsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultsVC.swift; sourceTree = "<group>"; };
 		58D500BC2A176E7500D5E10E /* ScheduleVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleVC.swift; sourceTree = "<group>"; };
 		58F4D8DA2AF7D1B8002E4E3E /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
-		58F4D8DC2AF80927002E4E3E /* TimetableItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableItemView.swift; sourceTree = "<group>"; };
+		58F4D8DC2AF80927002E4E3E /* ScheduleTimetableItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTimetableItemView.swift; sourceTree = "<group>"; };
 		58F4D8E22AF9B926002E4E3E /* StringDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDateFormatter.swift; sourceTree = "<group>"; };
-		58F4D8E42AFC70CF002E4E3E /* LocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoView.swift; sourceTree = "<group>"; };
+		58F4D8E42AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDetailsLocationView.swift; sourceTree = "<group>"; };
 		58F4D8E62AFC85EA002E4E3E /* CountryFlagProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryFlagProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -104,18 +132,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		580F7C402AC0CF6300E6DD88 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				589329702AE5C95F00FB89A5 /* ScheduleVM.swift */,
-				580F7C412AC0CF7E00E6DD88 /* StandingsVM.swift */,
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
 		5857C0742ABD097E00D9E893 /* Remote */ = {
 			isa = PBXGroup;
 			children = (
+				589925012AFFA198006D632C /* DTO */,
 				58601C6D2ABE6B740055B53B /* APIHandler.swift */,
 				58601C6B2ABE693B0055B53B /* APIService.swift */,
 				58BB13482ABEE93C004AA116 /* Repository.swift */,
@@ -126,32 +146,54 @@
 		5857C0752ABD0AAF00D9E893 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				589925192B005AF0006D632C /* Shared */,
 				58601C592ABE361F0055B53B /* F1ApiModel.swift */,
 				58601C5B2ABE3C620055B53B /* StandingsModel.swift */,
-				58601C612ABE63200055B53B /* DriverModel.swift */,
-				58601C632ABE632F0055B53B /* ConstructorModel.swift */,
-				58601C672ABE65F80055B53B /* RacesModel */,
-				58601C682ABE66510055B53B /* CircuitModel */,
+				58601C5D2ABE44EE0055B53B /* RaceTableModel.swift */,
+				58601C5F2ABE489C0055B53B /* ResultsDto.swift */,
+				5899251A2B005E34006D632C /* ScheduleModel.swift */,
+				5899251C2B0061B5006D632C /* RaceResultModel.swift */,
+				589925202B0061DF006D632C /* QualifyingResultModel.swift */,
+				5899251E2B0061C5006D632C /* SprintResultModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		58601C672ABE65F80055B53B /* RacesModel */ = {
+		589925012AFFA198006D632C /* DTO */ = {
 			isa = PBXGroup;
 			children = (
-				58601C5D2ABE44EE0055B53B /* RaceTableModel.swift */,
-				58601C5F2ABE489C0055B53B /* ResultsDto.swift */,
+				589925022AFFA1B0006D632C /* F1ApiDto.swift */,
+				5899250E2AFFC8BE006D632C /* ScheduleDto.swift */,
+				5899250C2AFFB88E006D632C /* RaceResultDto.swift */,
+				589925152B004477006D632C /* QualifyingResultDto.swift */,
+				589925172B00448B006D632C /* SprintResultDto.swift */,
+				589925102AFFCFE2006D632C /* DriverStandingDto.swift */,
+				589925122AFFD000006D632C /* ConstructorStandingDto.swift */,
+				589925142B0043B4006D632C /* Shared */,
+				589925042AFFA2D4006D632C /* CircuitDto.swift */,
+				589925062AFFA3DA006D632C /* LocationDto.swift */,
+				589925082AFFA59C006D632C /* DriverDto.swift */,
+				5899250A2AFFA5A8006D632C /* ConstructorDto.swift */,
 			);
-			path = RacesModel;
+			path = DTO;
 			sourceTree = "<group>";
 		};
-		58601C682ABE66510055B53B /* CircuitModel */ = {
+		589925142B0043B4006D632C /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		589925192B005AF0006D632C /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				58601C612ABE63200055B53B /* DriverModel.swift */,
+				58601C632ABE632F0055B53B /* ConstructorModel.swift */,
 				58601C652ABE64450055B53B /* CircuitModel.swift */,
 				58601C692ABE66720055B53B /* LocationModel.swift */,
 			);
-			path = CircuitModel;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		58D5007C2A176DA700D5E10E = {
@@ -175,8 +217,6 @@
 			children = (
 				5857C0752ABD0AAF00D9E893 /* Model */,
 				5857C0742ABD097E00D9E893 /* Remote */,
-				58D5009C2A176E0A00D5E10E /* MainTabBarVC.swift */,
-				580F7C402AC0CF6300E6DD88 /* ViewModels */,
 				58D500BA2A176E7500D5E10E /* ViewControllers */,
 				58D5009E2A176E2200D5E10E /* Views */,
 				58D500B52A176E5100D5E10E /* Utillities */,
@@ -203,6 +243,7 @@
 			children = (
 				58D500A02A176E2200D5E10E /* StandingsCell.swift */,
 				589329722AEBE67900FB89A5 /* ScheduleCell.swift */,
+				589924FF2AFE371A006D632C /* ResultCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -221,6 +262,7 @@
 		58D500BA2A176E7500D5E10E /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				58D5009C2A176E0A00D5E10E /* MainTabBarVC.swift */,
 				58D500BC2A176E7500D5E10E /* ScheduleVC.swift */,
 				589FA1902AF578AE009BC259 /* ScheduleDetailsVC.swift */,
 				58D500BB2A176E7500D5E10E /* ResultsVC.swift */,
@@ -232,9 +274,9 @@
 		58F4D8DE2AF809A0002E4E3E /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
-				58824D6C2AF6D9E300BA7839 /* ScheduleInfoView.swift */,
-				58F4D8DC2AF80927002E4E3E /* TimetableItemView.swift */,
-				58F4D8E42AFC70CF002E4E3E /* LocationInfoView.swift */,
+				58F4D8E42AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift */,
+				58824D6C2AF6D9E300BA7839 /* ScheduleDetailsView.swift */,
+				58F4D8DC2AF80927002E4E3E /* ScheduleTimetableItemView.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -328,6 +370,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				58601C6E2ABE6B740055B53B /* APIHandler.swift in Sources */,
+				589925182B00448B006D632C /* SprintResultDto.swift in Sources */,
+				589925112AFFCFE2006D632C /* DriverStandingDto.swift in Sources */,
 				58D500BE2A176E7500D5E10E /* ScheduleVC.swift in Sources */,
 				58601C642ABE632F0055B53B /* ConstructorModel.swift in Sources */,
 				58F4D8E32AF9B926002E4E3E /* StringDateFormatter.swift in Sources */,
@@ -335,26 +379,38 @@
 				58D500892A176DA700D5E10E /* AppDelegate.swift in Sources */,
 				58D5008B2A176DA700D5E10E /* SceneDelegate.swift in Sources */,
 				589329732AEBE67900FB89A5 /* ScheduleCell.swift in Sources */,
-				589329712AE5C95F00FB89A5 /* ScheduleVM.swift in Sources */,
+				589925132AFFD000006D632C /* ConstructorStandingDto.swift in Sources */,
 				58601C662ABE64450055B53B /* CircuitModel.swift in Sources */,
+				5899251B2B005E34006D632C /* ScheduleModel.swift in Sources */,
 				58824D6F2AF7BC8200BA7839 /* AdaptiveLayoutHelper.swift in Sources */,
 				58601C5A2ABE361F0055B53B /* F1ApiModel.swift in Sources */,
-				580F7C422AC0CF7E00E6DD88 /* StandingsVM.swift in Sources */,
 				58601C602ABE489C0055B53B /* ResultsDto.swift in Sources */,
 				58601C5E2ABE44EE0055B53B /* RaceTableModel.swift in Sources */,
-				58F4D8DD2AF80927002E4E3E /* TimetableItemView.swift in Sources */,
+				58F4D8DD2AF80927002E4E3E /* ScheduleTimetableItemView.swift in Sources */,
+				5899250D2AFFB88E006D632C /* RaceResultDto.swift in Sources */,
 				58F4D8E72AFC85EA002E4E3E /* CountryFlagProvider.swift in Sources */,
-				58824D6D2AF6D9E300BA7839 /* ScheduleInfoView.swift in Sources */,
-				58F4D8E52AFC70CF002E4E3E /* LocationInfoView.swift in Sources */,
+				589925052AFFA2D4006D632C /* CircuitDto.swift in Sources */,
+				589925162B004477006D632C /* QualifyingResultDto.swift in Sources */,
+				58824D6D2AF6D9E300BA7839 /* ScheduleDetailsView.swift in Sources */,
+				58F4D8E52AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift in Sources */,
 				58D500BD2A176E7500D5E10E /* ResultsVC.swift in Sources */,
+				5899250B2AFFA5A8006D632C /* ConstructorDto.swift in Sources */,
+				5899251D2B0061B5006D632C /* RaceResultModel.swift in Sources */,
+				589925212B0061DF006D632C /* QualifyingResultModel.swift in Sources */,
+				589925072AFFA3DA006D632C /* LocationDto.swift in Sources */,
 				58D500A72A176E2300D5E10E /* StandingsCell.swift in Sources */,
 				58D5009D2A176E0A00D5E10E /* MainTabBarVC.swift in Sources */,
+				589925032AFFA1B0006D632C /* F1ApiDto.swift in Sources */,
 				58601C6A2ABE66720055B53B /* LocationModel.swift in Sources */,
+				5899251F2B0061C5006D632C /* SprintResultModel.swift in Sources */,
 				58601C622ABE63200055B53B /* DriverModel.swift in Sources */,
 				58601C6C2ABE693B0055B53B /* APIService.swift in Sources */,
 				58F4D8DB2AF7D1B8002E4E3E /* ColorTheme.swift in Sources */,
 				58601C5C2ABE3C620055B53B /* StandingsModel.swift in Sources */,
 				58BB13492ABEE93D004AA116 /* Repository.swift in Sources */,
+				589925092AFFA59C006D632C /* DriverDto.swift in Sources */,
+				589925002AFE371A006D632C /* ResultCell.swift in Sources */,
+				5899250F2AFFC8BE006D632C /* ScheduleDto.swift in Sources */,
 				589FA1912AF578AE009BC259 /* ScheduleDetailsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

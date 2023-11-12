@@ -24,11 +24,12 @@ struct RaceModel: Codable {
     let raceName: String
     let circuit: CircuitModel
     let date, time: String
-    let firstPractice, secondPractice: PracticeDataModel
+    let firstPractice, secondPractice: PracticeDataModel?
     let thirdPractice: PracticeDataModel?
-    let qualifying: PracticeDataModel
+    let qualifying: PracticeDataModel?
     let sprint: PracticeDataModel?
-//    let results: [ResultModel]
+    let results: [ResultModel]?
+    
 
 
     enum CodingKeys: String, CodingKey {
@@ -40,7 +41,7 @@ struct RaceModel: Codable {
         case thirdPractice = "ThirdPractice"
         case qualifying = "Qualifying"
         case sprint = "Sprint"
-//        case results = "Results"
+        case results = "Results"
     }
 }
 
@@ -48,3 +49,4 @@ struct RaceModel: Codable {
 struct PracticeDataModel: Codable {
     let date, time: String
 }
+

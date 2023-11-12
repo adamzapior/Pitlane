@@ -3,80 +3,121 @@ import SnapKit
 import UIKit
 
 class StandingsVC: UIViewController {
-    var vm = StandingsVM()
+    var repository: Repository
 
+    private var driverStanding: [DriverStandingModel] = []
+    private var constructorStanding: [ConstructorStandingModel] = []
+    
+    private var driverStandings: [DriverStandingModel1] = []
+
+    private var highestPoints: Int?
+    private var constuctorHighestPoints: Int?
+
+    private let tableView = UITableView()
+    private let tableViewHeader = UIView()
+
+    private let standingType = ["Drivers", "Constructors"]
     private var displayedStandingType: DisplayedStandingType = .driver
+    private lazy var segmentedControl = UISegmentedControl(items: standingType)
 
-    let segmentedControl: UISegmentedControl = {
-        let standingType = ["Drivers", "Constructors"]
-        let sc = UISegmentedControl(items: standingType)
-        return sc
-    }()
+    private let activityIndicator = UIActivityIndicatorView()
+    private let errorLabel = UILabel()
 
-    private let calendarIcon: UIImageView = {
-        let icon = UIImageView(image: UIImage(systemName: "calendar"))
-        icon.tintColor = .red
-        return icon
-    }()
+    init(repository: Repository) {
+        self.repository = repository
+        super.init(nibName: nil, bundle: nil)
+    }
 
-    private let activityIndicator: UIActivityIndicatorView = {
-        let ai = UIActivityIndicatorView()
-        ai.style = .large
-        ai.color = UIColor.red
-        return ai
-    }()
-
-    private let tableViewHeader: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.UI.background
-        return view
-    }()
-
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.backgroundColor = UIColor.UI.background
-        tableView.allowsSelection = true
-        tableView.register(StandingsCell.self, forCellReuseIdentifier: StandingsCell.identifier)
-        tableView.isHidden = true
-        return tableView
-    }()
-
-    private let errorLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Failed to load standings. Please try again."
-        label.textColor = .red
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.isHidden = true // Initially hidden
-        return label
-    }()
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        vm.delegate = self
 
         setupUI()
+        setupActivityIndicator()
+        setupErrorLabel()
+
         activityIndicator.startAnimating()
 
-        scrollViewDidScroll(tableView)
-        setupGestureRecognizersAndCallbacks()
-
         Task {
-            await vm.fetchStandings()
+            await fetchStandings()
+            await getStandings()
         }
     }
 
-    // MARK: UI Setup
+    // MARK: Networking & Data setup
 
-    // Based on: https://www.uptech.team/blog/build-resizing-image-in-navigation-bar-with-large-title
-    func scrollViewDidScroll(_: UIScrollView) {
-        guard let height = navigationController?.navigationBar.frame.height else { return }
-        moveAndResizeImage(for: height)
+    private func fetchStandings() async {
+        do {
+            async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStanding()
+            async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStanding()
+
+            let driverResult = await driverStandingsResult
+            let constructorResult = await constructorStandingsResult
+
+            switch (driverResult, constructorResult) {
+                case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
+                    driverStanding = fetchedDriverStandings
+                    constructorStanding = fetchedConstructorStandings
+                    updateDriverHighestPoints()
+                    updateConstuctorHighestPoints()
+
+                    // Update the UI directly
+                    DispatchQueue.main.async {
+                        self.activityIndicator.stopAnimating()
+                        self.tableView.isHidden = false
+                        self.errorLabel.isHidden = true
+                        self.tableView.reloadData()
+                    }
+
+                // Handle errors directly in the VC
+                case let (.failure(driverError), _):
+                    print("Error fetching driver standings")
+                    updateUIForError(driverError)
+
+                case let (_, .failure(constructorError)):
+                    print("Error fetching constructor standings")
+                    updateUIForError(constructorError)
+            }
+        }
     }
+    
+    private func getStandings() async {
+        let result = await repository.getDriverStandings()
+        switch result {
+        case .success(let result):
+            self.driverStandings = result
+            
+            for driver in driverStandings {
+                print(driver.driver.name)
+                print(driver.constructors.name)
+            }
+        case .failure(let error):
+            print(error)
+        }
+    }
+
+    private func updateUIForError(_: Error) {
+        DispatchQueue.main.async {
+            self.errorLabel.isHidden = false
+            self.activityIndicator.stopAnimating()
+        }
+    }
+
+    private func updateDriverHighestPoints() {
+        highestPoints = driverStanding.compactMap { Int($0.points) }.max()
+    }
+
+    private func updateConstuctorHighestPoints() {
+        constuctorHighestPoints = constructorStanding.compactMap { Int($0.points) }.max()
+    }
+
+    // MARK: UI Setup
 
     private func setupUI() {
         navigationItem.title = "2023"
@@ -85,8 +126,25 @@ class StandingsVC: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.sizeToFit()
 
-        tableViewHeader.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
+        setupTableView()
+        setupSegmentedControl()
+    }
+
+    private func setupTableView() {
+        view.addSubview(tableView)
+
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.backgroundColor = UIColor.UI.background
+        tableView.allowsSelection = true
+        tableView.register(StandingsCell.self, forCellReuseIdentifier: StandingsCell.identifier)
+        tableView.isHidden = true
+
         tableView.addSubview(tableViewHeader)
+        tableViewHeader.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
+        tableViewHeader.backgroundColor = UIColor.UI.background
+        tableView.tableHeaderView = tableViewHeader
+
         tableViewHeader.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.left.equalToSuperview().offset(10)
@@ -94,8 +152,13 @@ class StandingsVC: UIViewController {
             make.height.equalTo(50)
         }
 
-        tableView.tableHeaderView = tableViewHeader
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.left.right.bottom.equalToSuperview()
+        }
+    }
 
+    private func setupSegmentedControl() {
         tableViewHeader.addSubview(segmentedControl)
 
         segmentedControl.snp.makeConstraints { make in
@@ -105,98 +168,34 @@ class StandingsVC: UIViewController {
 
         segmentedControl.addTarget(self, action: #selector(standingTypeDidChange(_:)), for: .valueChanged)
         segmentedControl.selectedSegmentIndex = 0
+    }
 
-        guard let navigationBar = navigationController?.navigationBar else { return }
-        navigationBar.addSubview(calendarIcon)
-        calendarIcon.layer.cornerRadius = Const.ImageSizeForLargeState / 2
-        calendarIcon.clipsToBounds = true
-        calendarIcon.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-Const.ImageRightMargin)
-            make.bottom.equalToSuperview().offset(-Const.ImageBottomMarginForLargeState)
-            make.height.equalTo(Const.ImageSizeForLargeState)
-            make.width.equalTo(calendarIcon.snp.height)
-        }
-
-        view.addSubview(tableView)
-//        tableView.estimatedRowHeight = 64.0 // Tu podajesz przybliżoną wysokość komórki
-        ////        tableView.rowHeight = UITableView.automaticDimension
-
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.left.right.bottom.equalToSuperview()
-        }
-
+    private func setupActivityIndicator() {
         view.addSubview(activityIndicator)
+
+        activityIndicator.style = .large
+        activityIndicator.color = UIColor.red
         activityIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+    }
 
+    private func setupErrorLabel() {
         view.addSubview(errorLabel)
+
+        errorLabel.text = "Failed to load standings. Please try again."
+        errorLabel.textColor = .red
+        errorLabel.textAlignment = .center
+        errorLabel.numberOfLines = 0
+        errorLabel.isHidden = true // Initially hidden
+
         errorLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview()
         }
     }
-    
-    private func setupTableView() {
-        
-    }
-    
-    private func setupTableViewHeader() {
-        
-    }
-    
-    private func setupActivityIndicator() {
-        
-    }
-    
-    private func setupErrorLabel() {
-        
-    }
-
-    // Based on: https://www.uptech.team/blog/build-resizing-image-in-navigation-bar-with-large-title
-    private func moveAndResizeImage(for height: CGFloat) {
-        let coeff: CGFloat = {
-            let delta = height - Const.NavBarHeightSmallState
-            let heightDifferenceBetweenStates = (Const.NavBarHeightLargeState - Const.NavBarHeightSmallState)
-            return delta / heightDifferenceBetweenStates
-        }()
-
-        let factor = Const.ImageSizeForSmallState / Const.ImageSizeForLargeState
-
-        let scale: CGFloat = {
-            let sizeAddendumFactor = coeff * (1.0 - factor)
-            return min(1.0, sizeAddendumFactor + factor)
-        }()
-
-        // Value of difference between icons for large and small states
-        let sizeDiff = Const.ImageSizeForLargeState * (1.0 - factor) // 8.0
-
-        let yTranslation: CGFloat = {
-            /// This value = 14. It equals to difference of 12 and 6 (bottom margin for large and small states). Also it adds 8.0 (size difference when the image gets smaller size)
-            let maxYTranslation = Const.ImageBottomMarginForLargeState - Const.ImageBottomMarginForSmallState + sizeDiff
-            return max(0, min(maxYTranslation, maxYTranslation - coeff * (Const.ImageBottomMarginForSmallState + sizeDiff)))
-        }()
-
-        let xTranslation = max(0, sizeDiff - coeff * sizeDiff)
-
-        calendarIcon.transform = CGAffineTransform.identity
-            .scaledBy(x: scale, y: scale)
-            .translatedBy(x: xTranslation, y: yTranslation)
-    }
 
     // MARK: Selectors & Gesture handling
-
-    private func setupGestureRecognizersAndCallbacks() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(calendarButtonTapped))
-        calendarIcon.isUserInteractionEnabled = true
-        calendarIcon.addGestureRecognizer(tapGesture)
-    }
-
-    @objc private func calendarButtonTapped() {
-        // Handle the tap on the calendar icon here
-        print("Calendar icon tapped!")
-    }
 
     @objc private func standingTypeDidChange(_ segmentedControl: UISegmentedControl) {
         switch segmentedControl.selectedSegmentIndex {
@@ -210,7 +209,6 @@ class StandingsVC: UIViewController {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
-        print("TESTTTT")
     }
 }
 
@@ -220,9 +218,9 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         switch displayedStandingType {
             case .driver:
-                return vm.driverStanding.count
+                return driverStanding.count
             case .constructor:
-                return vm.constructorStanding.count
+                return constructorStanding.count
         }
     }
 
@@ -232,9 +230,9 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
         }
         switch displayedStandingType {
             case .driver:
-                cell.configureDriverCell(with: vm.driverStanding[indexPath.row], maxPoints: vm.highestPoints ?? 1)
+                cell.configureDriverCell(with: driverStanding[indexPath.row], maxPoints: highestPoints ?? 1)
             case .constructor:
-                cell.configureConstuctorCell(with: vm.constructorStanding[indexPath.row], maxPoints: vm.constuctorHighestPoints ?? 1)
+                cell.configureConstuctorCell(with: constructorStanding[indexPath.row], maxPoints: constuctorHighestPoints ?? 1)
         }
 
         return cell
@@ -245,53 +243,7 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-// MARK: Delegate methods
-
-extension StandingsVC: StandingsVMDelegate {
-    func constructorStandingDidUpdate(_: StandingsVM, standing _: [ConstructorStandingModel]) {
-        for constructorStanding in vm.constructorStanding {
-            print(constructorStanding.constructor.name)
-        }
-    }
-
-    func standingsDidFailToUpdate(_: StandingsVM, error _: Error) {
-        print("Failed to load")
-
-        DispatchQueue.main.async {
-            self.errorLabel.isHidden = false
-            self.activityIndicator.stopAnimating()
-        }
-    }
-
-    func driverStandingDidUpdate(_: StandingsVM, standing _: [DriverStandingModel]) {
-        print("Data loaded")
-
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            self.activityIndicator.stopAnimating()
-            self.tableView.isHidden = false
-            self.errorLabel.isHidden = true
-        }
-
-        for driverStanding in vm.driverStanding {
-            print(driverStanding.driver.familyName)
-        }
-    }
-}
-
 private enum DisplayedStandingType {
     case driver
     case constructor
 }
-
-// Based on: https://www.uptech.team/blog/build-resizing-image-in-navigation-bar-with-large-title
-private enum Const {
-    static let ImageSizeForLargeState: CGFloat = 36 /// Image height/width for Large NavBar state
-    static let ImageRightMargin: CGFloat = 16 /// Margin from right anchor of safe area to right anchor of Image
-    static let ImageBottomMarginForLargeState: CGFloat = 12 /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state
-    static let ImageBottomMarginForSmallState: CGFloat = 12 /// Margin from bottom anchor of NavBar to bottom anchor of Image for Small NavBar state
-    static let ImageSizeForSmallState: CGFloat = 28 /// Image height/width for Small NavBar state
-    static let NavBarHeightSmallState: CGFloat = 44 /// Height of NavBar for Small state. Usually it's just 44
-    static let NavBarHeightLargeState: CGFloat = 96.5 /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
-}
-

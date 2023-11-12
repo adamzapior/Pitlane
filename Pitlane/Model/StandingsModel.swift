@@ -8,6 +8,7 @@
 import Foundation
 
 // MARK: - StandingsTable
+
 struct StandingsModel: Codable {
     let season: String
     let standingsLists: [StandingsListModel]
@@ -19,6 +20,7 @@ struct StandingsModel: Codable {
 }
 
 // MARK: - StandingsList
+
 struct StandingsListModel: Codable {
     let season, round: String
     let driverStandings: [DriverStandingModel]?
@@ -32,10 +34,11 @@ struct StandingsListModel: Codable {
 }
 
 // MARK: - DriverStanding
+
 struct DriverStandingModel: Codable {
     let position, positionText, points, wins: String
     let driver: DriverModel
-    let constructors: [ConstructorModel]  // arayy beforeee
+    let constructors: [ConstructorModel] // arayy beforeee
 
     enum CodingKeys: String, CodingKey {
         case position, positionText, points, wins
@@ -45,6 +48,7 @@ struct DriverStandingModel: Codable {
 }
 
 // MARK: - ConstructorStanding
+
 struct ConstructorStandingModel: Codable {
     let position, positionText, points, wins: String
     let constructor: ConstructorModel
@@ -55,3 +59,17 @@ struct ConstructorStandingModel: Codable {
     }
 }
 
+
+struct DriverStandingModel1: Codable {
+    let position: String
+    let points: String
+    let driver: DriverModel1
+    let constructors: ConstructorModel1
+}
+
+
+struct ConstructorStandingModel1: Codable {
+    let position: String
+    let points: String
+    let constructor: ConstructorModel1
+}

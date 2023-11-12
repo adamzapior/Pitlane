@@ -100,7 +100,7 @@ class StandingsCell: UITableViewCell {
         
         let maxPointsConverted = CGFloat(exactly: maxPoints)
     
-        if let pointsInt = Int(model.points), let points = CGFloat(exactly: pointsInt) {
+        if let pointsInt = Double(model.points), let points = CGFloat(exactly: pointsInt) {
             let ratio = points / maxPointsConverted!
             adjustBarWidth(ratio: ratio)
         } else {

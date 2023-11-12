@@ -9,37 +9,10 @@ import FlagKit
 import UIKit
 
 class ScheduleCell: UITableViewCell {
-    // MARK: - Variables
 
     static let identifier = "ScheduleCell"
 
     var cellType: CellType = .future
-
-    let countryMapping: [String: String] = [
-        "Bahrain": "BH",
-        "Saudi Arabia": "SA",
-        "Australia": "AU",
-        "Azerbaijan": "AZ",
-        "USA": "US",
-        "Monaco": "MC",
-        "Spain": "ES",
-        "Canada": "CA",
-        "Austria": "AT",
-        "UK": "UK",
-        "Hungary": "HU",
-        "Belgium": "BE",
-        "Netherlands": "NL",
-        "Italy": "IT",
-        "Singapore": "SG",
-        "Japan": "JP",
-        "Qatar": "QA",
-        "Mexico": "MX",
-        "Brazil": "BR",
-        "United States": "US",
-        "UAE": "AE",
-    ]
-
-    // MARK: - UI Components
 
     private let containerView: UIView = {
         let view = UIView()
@@ -62,7 +35,9 @@ class ScheduleCell: UITableViewCell {
 
     private let circuitLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .regular)
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = .UI.secondaryText
         return label
     }()
 

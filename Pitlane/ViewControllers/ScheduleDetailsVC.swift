@@ -9,8 +9,6 @@ import SnapKit
 import UIKit
 
 class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
-    // MARK: - Variables
-    
     var race: RaceModel!
     
     // MARK: - UI Components
@@ -31,30 +29,23 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
     /// Details
     
     let detailsContainer = UIView()
-    let locationView = LocationInfoView()
-    let roundInfoView = ScheduleInfoView()
-    let seasonInfoView = ScheduleInfoView()
-    let circuitInfoView = ScheduleInfoView()
+    let locationView = ScheduleDetailsLocationView()
+    let roundInfoView = ScheduleDetailsView()
+    let seasonInfoView = ScheduleDetailsView()
+    let circuitInfoView = ScheduleDetailsView()
     let dividerView = UIView()
     
     /// Schedule
     
     let scheduleSubtitleLabel = UILabel()
     let scheduleStackView = UIStackView()
-    let fp1View = TimetableItemView()
-    let fp2View = TimetableItemView()
-    let qualifyingView = TimetableItemView()
-    let raceView = TimetableItemView()
+    let fp1View = ScheduleTimetableItemView()
+    let fp2View = ScheduleTimetableItemView()
+    let qualifyingView = ScheduleTimetableItemView()
+    let raceView = ScheduleTimetableItemView()
     
-    lazy var fp3View: TimetableItemView = {
-        let view = TimetableItemView()
-        return view
-    }()
-        
-    lazy var sprintView: TimetableItemView = {
-        let view = TimetableItemView()
-        return view
-    }()
+    lazy var fp3View = ScheduleTimetableItemView()
+    lazy var sprintView = ScheduleTimetableItemView()
     
     // MARK: - Lifecycle
     
@@ -94,7 +85,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         setupDetailsSubtitleLabel()
         setupDetailsContainer()
         setupRaceDetails()
-        setupScheduleDetails()
+        setupScheduleSubtitleLabel()
         
         setupStackView()
         setupSessionViews()
@@ -128,6 +119,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
     
     private func setupImageView() {
         headerImageView.addSubview(imageView)
+        
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "schedule-header")
         imageView.contentMode = .scaleAspectFill
@@ -146,6 +138,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
     
     private func setupRaceNameLabel() {
         headerImageView.addSubview(raceNameTitle)
+        
         raceNameTitle.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize, weight: .heavy)
         raceNameTitle.textColor = .UI.imageHeaderText
         raceNameTitle.numberOfLines = 0
@@ -185,7 +178,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         
         detailsSubtitleLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView.snp.top)
-            make.leading.equalTo(contentView.snp.leading).offset(18)
+            make.leading.equalTo(contentView.snp.leading).offset(12)
         }
     }
     
@@ -206,7 +199,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         detailsContainer.addSubview(circuitInfoView)
         detailsContainer.addSubview(dividerView)
         
-        locationView.configure(with: race) // TODO
+        locationView.configure(with: race) // TODO:
         
         roundInfoView.configure(titleText: "ROUND", valueText: "\(race?.round ?? "-")")
         seasonInfoView.configure(titleText: "SEASON", valueText: "\(race?.season ?? "-")")
@@ -223,12 +216,14 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
             make.top.equalTo(locationView.snp.bottom).offset(12)
             make.leading.equalTo(detailsContainer.snp.leading).offset(6)
             make.width.equalTo(detailsContainer.snp.width).multipliedBy(0.5).offset(-10)
+            make.height.equalTo(circuitInfoView.snp.height)
         }
       
         seasonInfoView.snp.makeConstraints { make in
             make.top.equalTo(locationView.snp.bottom).offset(12)
             make.trailing.equalTo(detailsContainer.snp.trailing).offset(-6)
             make.width.equalTo(roundInfoView.snp.width)
+            make.height.equalTo(circuitInfoView.snp.height)
         }
       
         circuitInfoView.snp.makeConstraints { make in
@@ -246,7 +241,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    private func setupScheduleDetails() {
+    private func setupScheduleSubtitleLabel() {
         contentView.addSubview(scheduleSubtitleLabel)
         
         scheduleSubtitleLabel.text = "Schedule"
@@ -276,36 +271,38 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
     }
     
     private func setupSessionViews() {
-        scheduleStackView.addArrangedSubview(fp1View)
-        scheduleStackView.addArrangedSubview(fp2View)
-
-        fp1View.configure(practiceNameText: "FIRST PRACTICE", dateText: "\(race.firstPractice.date.scheduleDateFormatter()) - \(race.firstPractice.time.scheduleDetailsTimeFormatter())")
-        
-        fp2View.configure(practiceNameText: "SECOND PRACTICE", dateText: race.secondPractice.date)
-        
-        if let thirdPracticeDate = race?.thirdPractice?.date, let thirdPracticeTime = race?.thirdPractice?.time {
-            let fp3View = TimetableItemView()
-            fp3View.configure(practiceNameText: "THIRD PRACTICE", dateText: "\(thirdPracticeDate) \(thirdPracticeTime)")
-            scheduleStackView.addArrangedSubview(fp3View)
-        }
-        
-        if let qualifyingDate = race?.qualifying.date, let qualifyingTime = race?.qualifying.time {
-            let qualifyingView = TimetableItemView()
-            qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(qualifyingDate.scheduleDateFormatter()) - \(qualifyingTime.scheduleDetailsTimeFormatter())")
-            scheduleStackView.addArrangedSubview(qualifyingView)
-            print(qualifyingTime.scheduleDetailsTimeFormatter())
-        }
-        
         if race.sprint != nil {
+            scheduleStackView.addArrangedSubview(fp1View)
+            scheduleStackView.addArrangedSubview(qualifyingView)
+            scheduleStackView.addArrangedSubview(fp2View)
             scheduleStackView.addArrangedSubview(sprintView)
-            fp2View.configure(practiceNameText: "SPRINT QUALIFYING", dateText: race.secondPractice.date)
-            print("dziad lesny")
-        }
-        
-        if let raceDate = race?.firstPractice.date, let raceTime = race?.firstPractice.time {
-            let raceView = TimetableItemView()
-            raceView.configure(practiceNameText: "RACE", dateText: "\(raceDate) \(raceTime)")
             scheduleStackView.addArrangedSubview(raceView)
+
+            fp1View.configure(practiceNameText: "FIRST PRACTICE", dateText: "\(race.firstPractice!.date.scheduleDateFormatter()) - \(race.firstPractice!.time.scheduleDetailsTimeFormatter())")
+            
+            fp2View.configure(practiceNameText: "SPRINT QUALIFYING", dateText: "\(race.secondPractice!.date.scheduleDateFormatter()) - \(race.secondPractice!.time.scheduleDetailsTimeFormatter())")
+            
+            qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(race.qualifying!.date.scheduleDateFormatter()) - \(race.qualifying!.time.scheduleDetailsTimeFormatter())")
+
+            sprintView.configure(practiceNameText: "SPRINT", dateText: "\(race.sprint!.date.scheduleDateFormatter()) - \(race.sprint!.time.scheduleDetailsTimeFormatter())")
+
+            raceView.configure(practiceNameText: "RACE", dateText: "\(race.date.scheduleDateFormatter()) - \(race.time.scheduleDetailsTimeFormatter())")
+        } else {
+            scheduleStackView.addArrangedSubview(fp1View)
+            scheduleStackView.addArrangedSubview(fp2View)
+            scheduleStackView.addArrangedSubview(fp3View)
+            scheduleStackView.addArrangedSubview(qualifyingView)
+            scheduleStackView.addArrangedSubview(raceView)
+            
+            fp1View.configure(practiceNameText: "FIRST PRACTICE", dateText: "\(race.firstPractice!.date.scheduleDateFormatter()) - \(race.firstPractice!.time.scheduleDetailsTimeFormatter())")
+            
+            fp2View.configure(practiceNameText: "SECOND PRACTICE", dateText: "\(race.secondPractice!.date.scheduleDateFormatter()) - \(race.secondPractice!.time.scheduleDetailsTimeFormatter())")
+            
+            fp3View.configure(practiceNameText: "THIRD PRACTICE", dateText: "\(race.thirdPractice!.date.scheduleDateFormatter()) - \(race.thirdPractice!.time.scheduleDetailsTimeFormatter())")
+            
+            qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(race.qualifying!.date.scheduleDateFormatter()) - \(race.qualifying!.time.scheduleDetailsTimeFormatter())")
+
+            raceView.configure(practiceNameText: "RACE", dateText: "\(race.date.scheduleDateFormatter()) - \(race.time.scheduleDetailsTimeFormatter())")
         }
     }
 }

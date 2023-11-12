@@ -9,23 +9,128 @@ import SnapKit
 import UIKit
 
 class ScheduleVC: UIViewController {
-    var vm = ScheduleVM()
+    
+    var repository: Repository
+    
+    private var testSchedule: [ScheduleModel] = []
+    
+    private var raceSchedule: [RaceModel] = []
+    private var futureRaces: [RaceModel] = []
+    private var pastRaces: [RaceModel] = []
     
     private let tableView = UITableView()
+    private let activityIndicator = UIActivityIndicatorView()
+    private let errorLabel = UILabel()
+    
+    init(repository: Repository) {
+        self.repository = repository
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        vm.delegate = self
-        
+                
         setupTableView()
         setupUI()
         
+        activityIndicator.startAnimating()
+        
         Task {
-            await vm.fetchSchedule()
+            await fetchSchedule()
+            await getSchedule()
         }
+    }
+    
+    // MARK: Networking & Data setup
+    
+    func fetchSchedule() async {
+        let result = await repository.getSchedule()
+        switch result {
+        case .success(let schedule):
+            raceSchedule = schedule
+            futureRaces = filterFutureSchedule(schedule: raceSchedule)
+            pastRaces = filterPastSchedule(schedule: raceSchedule)
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.activityIndicator.stopAnimating()
+                self.tableView.isHidden = false
+                self.errorLabel.isHidden = true
+            }
+            
+        case .failure(_):
+            DispatchQueue.main.async {
+                self.errorLabel.isHidden = false
+                self.activityIndicator.stopAnimating()
+            }
+        }
+    }
+    
+    func getSchedule() async {
+        let result = await repository.getSchedule1()
+        switch result {
+        case .success(let schedule):
+            testSchedule = schedule
+            
+            for race in testSchedule {
+                print(race.raceName)
+                print(race.date.description)
+                print(race.sprint?.date ?? "none")
+            }
+            
+        case .failure(let error):
+            print(error)
+        }
+    }
+
+    private func filterFutureSchedule(schedule _: [RaceModel]) -> [RaceModel] {
+        let today = Date()
+        return raceSchedule.filter { race in
+            guard let raceDate = raceDate(from: race.date) else { return false }
+            return raceDate >= today
+        }
+    }
+
+    private func filterPastSchedule(schedule _: [RaceModel]) -> [RaceModel] {
+        let today = Date()
+        let pastRaces = raceSchedule.filter { race in
+            guard let raceDate = raceDate(from: race.date) else { return false }
+            return raceDate < today
+        }
+        return pastRaces.sorted(by: { firstRace, secondRace in
+            guard let firstDate = raceDate(from: firstRace.date),
+                  let secondDate = raceDate(from: secondRace.date) else { return false }
+            return firstDate < secondDate
+        }).reversed()
+    }
+
+    private func raceDate(from dateString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.date(from: dateString)
+    }
+    
+    // MARK: UI Setup
+    
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
+        title = "Schedule"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.left.right.bottom.equalToSuperview()
+        }
+        
+        setupActivityIndicator()
+        setupErrorLabel()
     }
     
     private func setupTableView() {
@@ -37,14 +142,28 @@ class ScheduleVC: UIViewController {
         tableView.isHidden = true
     }
     
-    private func setupUI() {
-        view.backgroundColor = .systemBackground
-        title = "Schedule"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.left.right.bottom.equalToSuperview()
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+
+        activityIndicator.style = .large
+        activityIndicator.color = UIColor.red
+        activityIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+
+    private func setupErrorLabel() {
+        view.addSubview(errorLabel)
+
+        errorLabel.text = "Failed to load standings. Please try again."
+        errorLabel.textColor = .red
+        errorLabel.textAlignment = .center
+        errorLabel.numberOfLines = 0
+        errorLabel.isHidden = true // Initially hidden
+
+        errorLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
     }
 }
@@ -70,23 +189,23 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         let scheduleType = ScheduleType.allCases[section]
         switch scheduleType {
         case .future:
-            return vm.futureRaces.count
+            return futureRaces.count
         case .past:
-            return vm.pastRaces.count
+            return pastRaces.count
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell", for: indexPath) as? ScheduleCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.identifier, for: indexPath) as? ScheduleCell else {
             fatalError("Custom cell error")
         }
         
         let scheduleType = ScheduleType.allCases[indexPath.section]
         switch scheduleType {
         case .future:
-            cell.configure(with: vm.futureRaces[indexPath.row], type: .future)
+            cell.configure(with: futureRaces[indexPath.row], type: .future)
         case .past:
-            cell.configure(with: vm.pastRaces[indexPath.row], type: .past)
+            cell.configure(with: pastRaces[indexPath.row], type: .past)
         }
                 
         return cell
@@ -98,9 +217,9 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
 
         switch scheduleType {
         case .future:
-            race = vm.futureRaces[indexPath.row]
+            race = futureRaces[indexPath.row]
         case .past:
-            race = vm.pastRaces[indexPath.row]
+            race = pastRaces[indexPath.row]
         }
         
         let detailsVC = ScheduleDetailsVC()
@@ -112,26 +231,6 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return 64
-    }
-}
-
-extension ScheduleVC: ScheduleVMDelegate {
-    func scheduleDidUpdate(_ viewModel: ScheduleVM, schedule _: [RaceModel]) {
-        print("Data loaded")
-        
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            self.tableView.isHidden = false
-        }
-        
-        for raceSchedule in viewModel.raceSchedule {
-            print(raceSchedule.raceName)
-            print(raceSchedule.date)
-        }
-        
-        for futureRace in viewModel.futureRaces {
-            print(futureRace.date)
-        }
     }
 }
 

@@ -9,7 +9,7 @@ import Foundation
 import SnapKit
 import UIKit
 
-class ScheduleInfoView: UIView {
+class ScheduleDetailsView: UIView {
     private let titleTextLabel = UILabel()
     private let valueTextLabel = UILabel()
     
@@ -55,7 +55,7 @@ class ScheduleInfoView: UIView {
         addSubview(valueTextLabel)
         
         valueTextLabel.numberOfLines = 0
-        valueTextLabel.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .semibold)
+        valueTextLabel.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .regular)
         valueTextLabel.adjustsFontForContentSizeCategory = true
         valueTextLabel.textColor = .UI.primaryText
         

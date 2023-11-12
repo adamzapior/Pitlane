@@ -7,14 +7,12 @@
 
 import Foundation
 
-
 // MARK: - Result
 struct ResultModel: Codable {
     let number, position, positionText, points: String
     let driver: DriverModel
     let constructor: ConstructorModel
-    let grid, laps: String
-    let status: Status
+    let grid, laps, status: String
     let time: ResultTimeModel?
     let fastestLap: FastestLapModel?
 
@@ -27,7 +25,6 @@ struct ResultModel: Codable {
         case fastestLap = "FastestLap"
     }
 }
-
 
 // MARK: - FastestLap
 struct FastestLapModel: Codable {
@@ -55,13 +52,6 @@ enum Units: String, Codable {
 // MARK: - FastestLapTime
 struct FastestLapTimeModel: Codable {
     let time: String
-}
-
-enum Status: String, Codable {
-    case collision = "Collision"
-    case finished = "Finished"
-    case suspension = "Suspension"
-    case the1Lap = "+1 Lap"
 }
 
 // MARK: - ResultTime

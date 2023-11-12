@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TimetableItemView: UIView {
+class ScheduleTimetableItemView: UIView {
     let practiceNameLabel = UILabel()
     let dateLabel = UILabel()
 
@@ -38,6 +38,7 @@ class TimetableItemView: UIView {
         addSubview(practiceNameLabel)
         
         practiceNameLabel.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .regular)
+        practiceNameLabel.adjustsFontForContentSizeCategory = true
         practiceNameLabel.textColor = .UI.secondaryText
 
         practiceNameLabel.snp.makeConstraints { make in

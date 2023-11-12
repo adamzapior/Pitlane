@@ -1,14 +1,16 @@
 //
-//  DriverModel.swift
+//  DriverDto.swift
 //  Pitlane
 //
-//  Created by Adam Zapiór on 23/09/2023.
+//  Created by Adam Zapiór on 11/11/2023.
 //
 
 import Foundation
 
-struct DriverModel: Codable {
-    let driverID, permanentNumber, code: String
+struct DriverDto: Codable {
+    let driverID: String
+    let permanentNumber: String?
+    let code: String
     let url: String
     let givenName, familyName, dateOfBirth, nationality: String
 

@@ -17,3 +17,10 @@ struct ConstructorModel: Codable {
         case url, name, nationality
     }
 }
+
+
+struct ConstructorModel1: Codable {
+    let constructorID: String
+    let name: String
+    let nationality: String
+}

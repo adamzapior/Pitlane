@@ -1,6 +1,9 @@
 import UIKit
 
 class MainTabBarVC: UITabBarController {
+    
+    let repository = Repository()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -8,9 +11,9 @@ class MainTabBarVC: UITabBarController {
 
         // MARK: View Setup
 
-        let vc1 = UINavigationController(rootViewController: ScheduleVC())
-        let vc2 = UINavigationController(rootViewController: ResultsVC())
-        let vc3 = UINavigationController(rootViewController: StandingsVC())
+        let vc1 = UINavigationController(rootViewController: ScheduleVC(repository: repository))
+        let vc2 = UINavigationController(rootViewController: ResultsVC(repository: repository))
+        let vc3 = UINavigationController(rootViewController: StandingsVC(repository: repository))
 
         vc1.tabBarItem.image = UIImage(systemName:
             "calendar")

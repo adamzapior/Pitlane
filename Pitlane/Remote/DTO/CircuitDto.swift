@@ -1,18 +1,17 @@
 //
-//  CircuitModel.swift
+//  CircuitDto.swift
 //  Pitlane
 //
-//  Created by Adam Zapiór on 23/09/2023.
+//  Created by Adam Zapiór on 11/11/2023.
 //
 
 import Foundation
 
-// MARK: - Circuit
-struct CircuitModel: Codable {
+struct CircuitDto: Codable {
     let circuitID: String
     let url: String
     let circuitName: String
-    let location: LocationModel
+    let location: LocationDto
 
     enum CodingKeys: String, CodingKey {
         case circuitID = "circuitId"
@@ -20,4 +19,3 @@ struct CircuitModel: Codable {
         case location = "Location"
     }
 }
-
