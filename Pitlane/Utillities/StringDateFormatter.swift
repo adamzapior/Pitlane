@@ -7,18 +7,24 @@
 
 import Foundation
 
-extension String {
-    
-    func combineDate(date dateString: String, time timeString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd' 'H:mm:ssZ" // Dostosuj format daty i czasu do formatu używanego w twoim API
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ustawienie lokalizacji na POSIX jest dobrą praktyką przy pracy z datami w formacie ISO
-        dateFormatter.timeZone = TimeZone(identifier: "UTC") // Ustawienie strefy czasowej na UTC
 
-        let combinedString = "\(dateString) \(timeString)"
-        return dateFormatter.date(from: combinedString)
+extension Date {
+    func convertDateToScheduleString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        return dateFormatter.string(from: self).uppercased()
     }
     
+    func convertToScheduleDetails() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.dateFormat = "dd MMM - h:mm a"
+        return dateFormatter.string(from: self).uppercased()
+    }
+}
+
+extension String {
     
     func scheduleDateFormatter() -> String {
         let inputFormatter = DateFormatter()

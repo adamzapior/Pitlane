@@ -9,18 +9,6 @@ import Foundation
 
 struct ConstructorModel: Codable {
     let constructorID: String
-    let url: String
-    let name, nationality: String
-
-    enum CodingKeys: String, CodingKey {
-        case constructorID = "constructorId"
-        case url, name, nationality
-    }
-}
-
-
-struct ConstructorModel1: Codable {
-    let constructorID: String
     let name: String
     let nationality: String
 }

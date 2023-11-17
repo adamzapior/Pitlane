@@ -11,12 +11,10 @@ import UIKit
 class ScheduleVC: UIViewController {
     
     var repository: Repository
-    
-    private var testSchedule: [ScheduleModel] = []
-    
-    private var raceSchedule: [RaceModel] = []
-    private var futureRaces: [RaceModel] = []
-    private var pastRaces: [RaceModel] = []
+        
+    private var raceSchedule: [ScheduleModel] = []
+    private var futureRaces: [ScheduleModel] = []
+    private var pastRaces: [ScheduleModel] = []
     
     private let tableView = UITableView()
     private let activityIndicator = UIActivityIndicatorView()
@@ -44,7 +42,6 @@ class ScheduleVC: UIViewController {
         
         Task {
             await fetchSchedule()
-            await getSchedule()
         }
     }
     
@@ -73,48 +70,19 @@ class ScheduleVC: UIViewController {
         }
     }
     
-    func getSchedule() async {
-        let result = await repository.getSchedule1()
-        switch result {
-        case .success(let schedule):
-            testSchedule = schedule
-            
-            for race in testSchedule {
-                print(race.raceName)
-                print(race.date.description)
-                print(race.sprint?.date ?? "none")
-            }
-            
-        case .failure(let error):
-            print(error)
-        }
-    }
-
-    private func filterFutureSchedule(schedule _: [RaceModel]) -> [RaceModel] {
+    private func filterFutureSchedule(schedule: [ScheduleModel]) -> [ScheduleModel] {
         let today = Date()
-        return raceSchedule.filter { race in
-            guard let raceDate = raceDate(from: race.date) else { return false }
-            return raceDate >= today
+        return schedule.filter { race in
+            return race.date >= today
         }
     }
-
-    private func filterPastSchedule(schedule _: [RaceModel]) -> [RaceModel] {
+    
+    private func filterPastSchedule(schedule: [ScheduleModel]) -> [ScheduleModel] {
         let today = Date()
-        let pastRaces = raceSchedule.filter { race in
-            guard let raceDate = raceDate(from: race.date) else { return false }
-            return raceDate < today
+        let pastSchedule = schedule.filter { race in
+            return race.date < today
         }
-        return pastRaces.sorted(by: { firstRace, secondRace in
-            guard let firstDate = raceDate(from: firstRace.date),
-                  let secondDate = raceDate(from: secondRace.date) else { return false }
-            return firstDate < secondDate
-        }).reversed()
-    }
-
-    private func raceDate(from dateString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.date(from: dateString)
+        return pastSchedule.reversed()
     }
     
     // MARK: UI Setup
@@ -140,6 +108,7 @@ class ScheduleVC: UIViewController {
         tableView.allowsSelection = true
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identifier)
         tableView.isHidden = true
+        tableView.showsVerticalScrollIndicator = false
     }
     
     private func setupActivityIndicator() {
@@ -213,7 +182,7 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         let scheduleType = ScheduleType.allCases[indexPath.section]
-        let race: RaceModel
+        let race: ScheduleModel
 
         switch scheduleType {
         case .future:

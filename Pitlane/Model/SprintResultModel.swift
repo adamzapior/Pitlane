@@ -10,7 +10,7 @@ import Foundation
 struct SprintResultModel: Codable {
     let round: String
     let raceName: String
-    let circuit: CircuitModel1
+    let circuit: CircuitModel
     let date: Date
     let sprintResults: [SprintResultDataModel]
 }
@@ -20,8 +20,8 @@ struct SprintResultModel: Codable {
 struct SprintResultDataModel: Codable {
     let position: String
     let points: String
-    let driver: DriverModel1
-    let constructor: ConstructorModel1
+    let driver: DriverModel
+    let constructor: ConstructorModel
     let grid: String
     let laps: String
     let status: String

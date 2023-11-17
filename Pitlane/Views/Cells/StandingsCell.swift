@@ -74,8 +74,8 @@ class StandingsCell: UITableViewCell {
     
     func configureDriverCell(with model: DriverStandingModel, maxPoints: Int) {
         positionLabel.text = model.position
-        nameLabel.text = model.driver.givenName
-        surnameLabel.text = model.driver.familyName
+        nameLabel.text = model.driver.name
+        surnameLabel.text = model.driver.surname
         pointsLabel.text = model.points
         
         flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)

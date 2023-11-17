@@ -1,6 +1,6 @@
 import UIKit
 
-class MainTabBarVC: UITabBarController {
+class TabBarVC: UITabBarController {
     
     let repository = Repository()
     
@@ -8,8 +8,6 @@ class MainTabBarVC: UITabBarController {
         super.viewDidLoad()
 
         view.backgroundColor = UIColor.UI.background
-
-        // MARK: View Setup
 
         let vc1 = UINavigationController(rootViewController: ScheduleVC(repository: repository))
         let vc2 = UINavigationController(rootViewController: ResultsVC(repository: repository))

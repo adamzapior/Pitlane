@@ -11,7 +11,7 @@ import Foundation
 struct RaceResultModel: Codable {
     let round: String
     let raceName: String
-    let circuit: CircuitModel1
+    let circuit: CircuitModel
     let date: Date
     let results: [RaceResultDataModel]
 }
@@ -19,8 +19,8 @@ struct RaceResultModel: Codable {
 // MARK: - Result
 struct RaceResultDataModel: Codable {
     let position, points: String
-    let driver: DriverModel1
-    let constructor: ConstructorModel1
+    let driver: DriverModel
+    let constructor: ConstructorModel
     let grid, laps, status: String
     let time: RaceResultTimeModel?
 //    let fastestLap: RaceResultFastestLapModel

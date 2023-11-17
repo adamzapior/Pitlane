@@ -72,11 +72,11 @@ class ScheduleCell: UITableViewCell {
 
     // MARK: - UI Setup
 
-    func configure(with model: RaceModel, type: CellType) {
+    func configure(with model: ScheduleModel, type: CellType) {
         cellType = type
         raceLabel.text = model.raceName
         circuitLabel.text = "\(model.round) - \(model.circuit.circuitName)"
-        dateLabel.text = model.date.scheduleDateFormatter()
+        dateLabel.text = model.date.convertDateToScheduleString()
 
         flagImage.image = CountryFlagProvider.shared.countryFlag(for: model.circuit.location.country)
     }

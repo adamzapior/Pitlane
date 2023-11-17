@@ -5,10 +5,8 @@ import UIKit
 class StandingsVC: UIViewController {
     var repository: Repository
 
-    private var driverStanding: [DriverStandingModel] = []
-    private var constructorStanding: [ConstructorStandingModel] = []
-    
-    private var driverStandings: [DriverStandingModel1] = []
+    private var driverStandings: [DriverStandingModel] = []
+    private var constructorStandings: [ConstructorStandingModel] = []
 
     private var highestPoints: Int?
     private var constuctorHighestPoints: Int?
@@ -46,59 +44,41 @@ class StandingsVC: UIViewController {
 
         Task {
             await fetchStandings()
-            await getStandings()
         }
     }
 
     // MARK: Networking & Data setup
 
     private func fetchStandings() async {
-        do {
-            async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStanding()
-            async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStanding()
+        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStandings()
+        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStandings()
 
-            let driverResult = await driverStandingsResult
-            let constructorResult = await constructorStandingsResult
+        let driverResult = await driverStandingsResult
+        let constructorResult = await constructorStandingsResult
 
-            switch (driverResult, constructorResult) {
-                case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
-                    driverStanding = fetchedDriverStandings
-                    constructorStanding = fetchedConstructorStandings
-                    updateDriverHighestPoints()
-                    updateConstuctorHighestPoints()
+        switch (driverResult, constructorResult) {
+            case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
+                driverStandings = fetchedDriverStandings
+                constructorStandings = fetchedConstructorStandings
+                updateDriverHighestPoints()
+                updateConstuctorHighestPoints()
 
-                    // Update the UI directly
-                    DispatchQueue.main.async {
-                        self.activityIndicator.stopAnimating()
-                        self.tableView.isHidden = false
-                        self.errorLabel.isHidden = true
-                        self.tableView.reloadData()
-                    }
+                // Update the UI directly
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.tableView.isHidden = false
+                    self.errorLabel.isHidden = true
+                    self.tableView.reloadData()
+                }
 
-                // Handle errors directly in the VC
-                case let (.failure(driverError), _):
-                    print("Error fetching driver standings")
-                    updateUIForError(driverError)
+            // Handle errors directly in the VC
+            case let (.failure(driverError), _):
+                print("Error fetching driver standings")
+                updateUIForError(driverError)
 
-                case let (_, .failure(constructorError)):
-                    print("Error fetching constructor standings")
-                    updateUIForError(constructorError)
-            }
-        }
-    }
-    
-    private func getStandings() async {
-        let result = await repository.getDriverStandings()
-        switch result {
-        case .success(let result):
-            self.driverStandings = result
-            
-            for driver in driverStandings {
-                print(driver.driver.name)
-                print(driver.constructors.name)
-            }
-        case .failure(let error):
-            print(error)
+            case let (_, .failure(constructorError)):
+                print("Error fetching constructor standings")
+                updateUIForError(constructorError)
         }
     }
 
@@ -110,11 +90,11 @@ class StandingsVC: UIViewController {
     }
 
     private func updateDriverHighestPoints() {
-        highestPoints = driverStanding.compactMap { Int($0.points) }.max()
+        highestPoints = driverStandings.compactMap { Int($0.points) }.max()
     }
 
     private func updateConstuctorHighestPoints() {
-        constuctorHighestPoints = constructorStanding.compactMap { Int($0.points) }.max()
+        constuctorHighestPoints = constructorStandings.compactMap { Int($0.points) }.max()
     }
 
     // MARK: UI Setup
@@ -136,9 +116,10 @@ class StandingsVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.UI.background
-        tableView.allowsSelection = true
+        tableView.allowsSelection = false
         tableView.register(StandingsCell.self, forCellReuseIdentifier: StandingsCell.identifier)
         tableView.isHidden = true
+        tableView.showsVerticalScrollIndicator = false
 
         tableView.addSubview(tableViewHeader)
         tableViewHeader.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
@@ -218,21 +199,21 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         switch displayedStandingType {
             case .driver:
-                return driverStanding.count
+                return driverStandings.count
             case .constructor:
-                return constructorStanding.count
+                return constructorStandings.count
         }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "StandingsCell", for: indexPath) as? StandingsCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: StandingsCell.identifier, for: indexPath) as? StandingsCell else {
             fatalError("Custom cell error")
         }
         switch displayedStandingType {
             case .driver:
-                cell.configureDriverCell(with: driverStanding[indexPath.row], maxPoints: highestPoints ?? 1)
+                cell.configureDriverCell(with: driverStandings[indexPath.row], maxPoints: highestPoints ?? 1)
             case .constructor:
-                cell.configureConstuctorCell(with: constructorStanding[indexPath.row], maxPoints: constuctorHighestPoints ?? 1)
+                cell.configureConstuctorCell(with: constructorStandings[indexPath.row], maxPoints: constuctorHighestPoints ?? 1)
         }
 
         return cell

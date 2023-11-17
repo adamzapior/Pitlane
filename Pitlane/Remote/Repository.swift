@@ -8,38 +8,32 @@
 import Alamofire
 import Foundation
 
-class Repository {
-    func getSchedule() async -> NetworkResult<[RaceModel]> {
-        let result: NetworkResult<F1ApiModel> = await APIHandler.get(APIService.getSchedule())
-        switch result {
-        case .success(let f1ApiModel):
-            guard let raceTable = f1ApiModel.f1Data.raceTable?.races else {
-                return .failure(NetworkError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
-            }
-            return .success(raceTable)
-        case .failure(let error):
-            return .failure(error)
-        }
-    }
+protocol RepositoryProtocol {
+    func getSchedule() async -> NetworkResult<[ScheduleModel]>
     
-    // MARK:  -  START
+    func getRaceResult() async -> NetworkResult<[RaceResultModel]>
     
+    func getQualifyingResult() async -> NetworkResult<[QualifyingResultModel]>
     
-    func getSchedule1() async -> NetworkResult<[ScheduleModel]> {
+    func getSprintResult() async -> NetworkResult<[SprintResultModel]>
+    
+    func getDriverStandings() async -> NetworkResult<[DriverStandingModel]>
+    
+    func getConstructorStandings() async -> NetworkResult<[ConstructorStandingModel]>
+}
+
+class Repository: RepositoryProtocol {
+    func getSchedule() async -> NetworkResult<[ScheduleModel]> {
         let result: NetworkResult<ScheduleDto> = await APIHandler.get(APIService.getSchedule())
         switch result {
         case .success(let dto):
-            let schedule = dto.mrData.raceTable.races.compactMap { dto -> ScheduleModel? in
+            let schedule = dto.mrData.raceTable.races.map { dto -> ScheduleModel in
                 
-                /// If any date component is nil, race will not be in the schedule array.
-                guard let firstPracticeDate = combineDate(date: dto.firstPractice.date, time: dto.firstPractice.time),
-                      let secondPracticeDate = combineDate(date: dto.secondPractice.date, time: dto.secondPractice.time),
-                      let qualifyingDate = combineDate(date: dto.qualifying.date, time: dto.qualifying.time),
-                      let raceDate = combineDate(date: dto.date, time: dto.time)
-                else {
-                    return nil
-                }
-                
+                let firstPracticeDate = combineDate(date: dto.firstPractice.date, time: dto.firstPractice.time)
+                let secondPracticeDate = combineDate(date: dto.secondPractice.date, time: dto.secondPractice.time)
+                let qualifyingDate = combineDate(date: dto.qualifying.date, time: dto.qualifying.time)
+                let raceDate = combineDate(date: dto.date, time: dto.time)
+          
                 /// Optional practice data
                 var thirdPracticeDate: Date? = nil
                 if let thirdPractice = dto.thirdPractice {
@@ -51,17 +45,34 @@ class Repository {
                     sprintDate = combineDate(date: sprint.date, time: sprint.time)
                 }
                 
-                return ScheduleModel(round: dto.round,
-                                     raceName: dto.raceName,
-                                     circuit: CircuitModel1(circuitID: dto.circuit.circuitID,
-                                                            circuitName: dto.circuit.circuitName,
-                                                            location: LocationModel1(locality: dto.circuit.location.locality, country: dto.circuit.location.country)),
-                                     date: raceDate,
-                                     firstPractice: PracticeDataModel1(date: firstPracticeDate),
-                                     secondPractice: PracticeDataModel1(date: secondPracticeDate),
-                                     thirdPractice: thirdPracticeDate != nil ? PracticeDataModel1(date: thirdPracticeDate!) : nil,
-                                     qualifying: PracticeDataModel1(date: qualifyingDate),
-                                     sprint: sprintDate != nil ? PracticeDataModel1(date: sprintDate!) : nil)
+                /// Return schedule if sprint exsist
+                if dto.sprint != nil {
+                    return ScheduleModel(season: dto.season,
+                                         round: dto.round,
+                                         raceName: dto.raceName,
+                                         circuit: createCircuitModel(from: dto.circuit),
+                                         date: raceDate,
+                                         firstPractice: PracticeDataModel(date: firstPracticeDate),
+                                         secondPractice: nil,
+                                         thirdPractice: nil,
+                                         sprintQualifying: PracticeDataModel(date: secondPracticeDate),
+                                         qualifying: PracticeDataModel(date: qualifyingDate),
+                                         sprint: PracticeDataModel(date: sprintDate!))
+                }
+                /// Return schedule without sprint
+                else {
+                    return ScheduleModel(season: dto.season,
+                                         round: dto.round,
+                                         raceName: dto.raceName,
+                                         circuit: createCircuitModel(from: dto.circuit),
+                                         date: raceDate,
+                                         firstPractice: PracticeDataModel(date: firstPracticeDate),
+                                         secondPractice: PracticeDataModel(date: secondPracticeDate),
+                                         thirdPractice: PracticeDataModel(date: thirdPracticeDate!),
+                                         sprintQualifying: nil,
+                                         qualifying: PracticeDataModel(date: qualifyingDate),
+                                         sprint: nil)
+                }
             }
             return .success(schedule)
         case .failure(let error):
@@ -98,7 +109,7 @@ class Repository {
                 return RaceResultModel(round: dtoRace.round,
                                        raceName: dtoRace.raceName,
                                        circuit: createCircuitModel(from: dtoRace.circuit),
-                                       date: raceDate!,
+                                       date: raceDate,
                                        results: raceResultData)
             }
             return .success(raceResult)
@@ -127,7 +138,7 @@ class Repository {
                 return QualifyingResultModel(round: dtoQuali.round,
                                              raceName: dtoQuali.raceName,
                                              circuit: createCircuitModel(from: dtoQuali.circuit),
-                                             date: qualiDate!,
+                                             date: qualiDate,
                                              qualifyingResults: qualifyingResultData)
             }
             
@@ -167,7 +178,7 @@ class Repository {
                 return SprintResultModel(round: dtoSprint.round,
                                          raceName: dtoSprint.raceName,
                                          circuit: createCircuitModel(from: dtoSprint.circuit),
-                                         date: sprintDate!,
+                                         date: sprintDate,
                                          sprintResults: sprintResultData)
             }
             
@@ -177,13 +188,16 @@ class Repository {
         }
     }
     
-    func getDriverStandings() async -> NetworkResult<[DriverStandingModel1]> {
+    func getDriverStandings() async -> NetworkResult<[DriverStandingModel]> {
         let result: NetworkResult<DriverStandingDto> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .driverStandings))
         switch result {
         case .success(let dto):
             let driverStandings = dto.mrData.standingsTable.standingsLists.map {
                 $0.driverStandings.map { standings in
-                    return DriverStandingModel1(position: standings.position, points: standings.points, driver: createDriverModel(from: standings.driver), constructors: createConstructorModel(from: standings.constructors.first!)) // dto return array with only one constructor per driver
+                    DriverStandingModel(position: standings.position, 
+                                        points: standings.points,
+                                        driver: createDriverModel(from: standings.driver),
+                                        constructors: createConstructorModel(from: standings.constructors.first!)) /// dto return array with only one constructor per driver
                 }
             }.flatMap { $0 }
             return .success(driverStandings)
@@ -192,13 +206,15 @@ class Repository {
         }
     }
     
-    func getConstructorStandings() async -> NetworkResult<[ConstructorStandingModel1]> {
+    func getConstructorStandings() async -> NetworkResult<[ConstructorStandingModel]> {
         let result: NetworkResult<ConstructorStandingDto> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .constructorStandings))
         switch result {
         case .success(let dto):
             let constructorStandings = dto.mrData.standingsTable.standingsLists.map {
                 $0.constructorStandings.map { standings in
-                    ConstructorStandingModel1(position: standings.position, points: standings.points, constructor: createConstructorModel(from: standings.constructor))
+                    ConstructorStandingModel(position: standings.position, 
+                                             points: standings.points,
+                                             constructor: createConstructorModel(from: standings.constructor))
                 }
             }.flatMap { $0 }
             return .success(constructorStandings)
@@ -206,88 +222,41 @@ class Repository {
             return .failure(error)
         }
     }
-    
-    // MARK:  -  END
-    
-    func getResults() async -> NetworkResult<[RaceModel]> {
-        let result: NetworkResult<F1ApiModel> = await APIHandler.get(APIService.getResults())
-        switch result {
-        case .success(let f1ApiModel):
-            guard let raceResult = f1ApiModel.f1Data.raceTable?.races else {
-                return .failure(NetworkError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
-            }
-            return .success(raceResult)
-        case .failure(let error):
-            return .failure(error)
-        }
-    }
-    
-    func getDriverStanding() async -> NetworkResult<[DriverStandingModel]> {
-        let result: NetworkResult<F1ApiModel> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .driverStandings))
-        switch result {
-        case .success(let f1ApiModel):
-            guard let driverStandings = f1ApiModel.f1Data.standingsTable?.standingsLists.flatMap({ list in
-                list.driverStandings ?? []
-            }) else {
-                return .failure(NetworkError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
-            }
-            return .success(driverStandings)
-        case .failure(let error):
-            return .failure(error)
-        }
-    }
-    
-    
-    func getConstructorStanding() async -> NetworkResult<[ConstructorStandingModel]> {
-        let result: NetworkResult<F1ApiModel> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .constructorStandings))
-        switch result {
-        case .success(let f1ApiModel):
-            guard let constructorStanding = f1ApiModel.f1Data.standingsTable?.standingsLists.flatMap({ list in
-                list.constructorStandings ?? []
-            }) else {
-                return .failure(NetworkError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
-            }
-            return .success(constructorStanding)
-        case .failure(let error):
-            return .failure(error)
-        }
-    }
-    
 }
 
 // MARK: Parsing methods
 
 extension Repository {
-    private func combineDate(date dateString: String, time timeString: String) -> Date? {
+    private func combineDate(date dateString: String, time timeString: String) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd' 'H:mm:ssZ"
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+//        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
 
         let combinedString = "\(dateString) \(timeString)"
-        return dateFormatter.date(from: combinedString)
+        return dateFormatter.date(from: combinedString)!
     }
     
-    private func createDriverModel(from driverDto: DriverDto) -> DriverModel1 {
-        return DriverModel1(driverID: driverDto.driverID,
-                            name: driverDto.givenName,
-                            surname: driverDto.familyName,
-                            nationality: driverDto.nationality)
+    private func createDriverModel(from driverDto: DriverDto) -> DriverModel {
+        return DriverModel(driverID: driverDto.driverID,
+                           name: driverDto.givenName,
+                           surname: driverDto.familyName,
+                           nationality: driverDto.nationality)
     }
 
-    private func createConstructorModel(from constructorDto: ConstructorDto) -> ConstructorModel1 {
-        return ConstructorModel1(constructorID: constructorDto.constructorID,
-                                 name: constructorDto.name,
-                                 nationality: constructorDto.nationality)
+    private func createConstructorModel(from constructorDto: ConstructorDto) -> ConstructorModel {
+        return ConstructorModel(constructorID: constructorDto.constructorID,
+                                name: constructorDto.name,
+                                nationality: constructorDto.nationality)
     }
 
-    private func createCircuitModel(from circuitDto: CircuitDto) -> CircuitModel1 {
-        return CircuitModel1(circuitID: circuitDto.circuitID,
-                             circuitName: circuitDto.circuitName,
-                             location: createLocationModel(from: circuitDto.location))
+    private func createCircuitModel(from circuitDto: CircuitDto) -> CircuitModel {
+        return CircuitModel(circuitID: circuitDto.circuitID,
+                            circuitName: circuitDto.circuitName,
+                            location: createLocationModel(from: circuitDto.location))
     }
 
-    private func createLocationModel(from locationDto: LocationDto) -> LocationModel1 {
-        return LocationModel1(locality: locationDto.locality, country: locationDto.country)
+    private func createLocationModel(from locationDto: LocationDto) -> LocationModel {
+        return LocationModel(locality: locationDto.locality, country: locationDto.country)
     }
 }

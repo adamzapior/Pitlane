@@ -56,8 +56,23 @@ class ResultCell: UITableViewCell {
         return winnerImage
     }()
     
-    private let poleLabel = UILabel()
-    private let winnerLabel = UILabel()
+    private let poleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
+    
+    private let winnerLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
+    
+    private let dateLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
 
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -71,21 +86,15 @@ class ResultCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: RaceModel) {
+    func configure(raceModel: RaceResultModel, qualifyingModel: QualifyingResultModel) {
         
-        raceLabel.text = model.raceName
-        circuitLabel.text = "\(model.round) - \(model.circuit.circuitName)"
+        flagImage.image = CountryFlagProvider.shared.countryFlag(for: raceModel.circuit.location.country)
         
-        poleLabel.text = "XD"
-        
-        if let result = model.results {
-            let firstDriver = result[0].driver.familyName
-            winnerLabel.text = firstDriver
-        }
-        
-        
-        
-        flagImage.image = CountryFlagProvider.shared.countryFlag(for: model.circuit.location.country)
+        raceLabel.text = raceModel.raceName
+        circuitLabel.text = "\(raceModel.round) - \(raceModel.circuit.circuitName)"
+        poleLabel.text = qualifyingModel.qualifyingResults[0].driver.surname
+        winnerLabel.text = raceModel.results[0].driver.surname
+        dateLabel.text = raceModel.date.convertDateToScheduleString()
     }
 
     private func setupUI() {
@@ -97,7 +106,7 @@ class ResultCell: UITableViewCell {
         addSubview(poleLabel)
         addSubview(winnerImage)
         addSubview(winnerLabel)
-        
+        addSubview(dateLabel)
         
         flagImage.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(24)
@@ -128,7 +137,7 @@ class ResultCell: UITableViewCell {
         
         poleLabel.snp.makeConstraints { make in
             make.centerY.equalTo(poleImage)
-            make.centerX.equalTo(circuitLabel.snp.leftMargin)
+            make.leading.equalTo(circuitLabel.snp.leading)
 //            make.leading.equalTo(poleImage.snp.trailing).offset(6)
         }
         
@@ -140,7 +149,12 @@ class ResultCell: UITableViewCell {
         
         winnerLabel.snp.makeConstraints { make in
             make.top.equalTo(poleLabel.snp.bottom).offset(6)
-            make.leading.equalTo(winnerImage.snp.trailing).offset(6)
+            make.leading.equalTo(circuitLabel.snp.leading)
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(winnerLabel)
+            make.trailing.equalToSuperview().offset(-18)
         }
     }
 

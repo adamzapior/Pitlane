@@ -63,7 +63,7 @@ struct RaceResultDataDto: Codable {
     let constructor: ConstructorDto
     let grid, laps, status: String
     let time: RaceResultTimeDto?
-    let fastestLap: RaceFastestLapDto
+    let fastestLap: RaceFastestLapDto?
 
     enum CodingKeys: String, CodingKey {
         case number, position, positionText, points
@@ -94,10 +94,10 @@ struct RaceAverageSpeedDto: Codable {
     let speed: String
 }
 
-//
-//enum Units: String, Codable {
-//    case kph = "kph"
-//}
+
+enum Units: String, Codable {
+    case kph = "kph"
+}
 
 // MARK: - FastestLapTime
 struct RaceFastestLapTimeDto: Codable {

@@ -23,7 +23,7 @@ class ScheduleDetailsLocationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: RaceModel) {
+    func configure(with model: ScheduleModel) {
         print("Configuring LocationInfoView with model: \(model)")
         
         locationNameLabel.text = model.circuit.location.locality

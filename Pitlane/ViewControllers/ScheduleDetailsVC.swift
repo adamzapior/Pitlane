@@ -9,7 +9,7 @@ import SnapKit
 import UIKit
 
 class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
-    var race: RaceModel!
+    var race: ScheduleModel!
     
     // MARK: - UI Components
     
@@ -40,11 +40,12 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
     let scheduleSubtitleLabel = UILabel()
     let scheduleStackView = UIStackView()
     let fp1View = ScheduleTimetableItemView()
-    let fp2View = ScheduleTimetableItemView()
     let qualifyingView = ScheduleTimetableItemView()
     let raceView = ScheduleTimetableItemView()
     
+    lazy var fp2View = ScheduleTimetableItemView()
     lazy var fp3View = ScheduleTimetableItemView()
+    lazy var sprintQualifyingView = ScheduleTimetableItemView()
     lazy var sprintView = ScheduleTimetableItemView()
     
     // MARK: - Lifecycle
@@ -202,7 +203,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         locationView.configure(with: race) // TODO:
         
         roundInfoView.configure(titleText: "ROUND", valueText: "\(race?.round ?? "-")")
-        seasonInfoView.configure(titleText: "SEASON", valueText: "\(race?.season ?? "-")")
+        seasonInfoView.configure(titleText: "SEASON", valueText: "\(race?.season ?? "-")") 
         circuitInfoView.configure(titleText: "CIRCUIT", valueText: "\(race?.circuit.circuitName ?? "-")")
         
         locationView.snp.makeConstraints { make in
@@ -270,39 +271,34 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         }
     }
     
+    /// Setup schedule stack view in order depend on weekend type (with or without sprint)
     private func setupSessionViews() {
-        if race.sprint != nil {
-            scheduleStackView.addArrangedSubview(fp1View)
-            scheduleStackView.addArrangedSubview(qualifyingView)
+        scheduleStackView.addArrangedSubview(fp1View)
+        fp1View.configure(practiceNameText: "FIRST PRACTICE", dateText: "\(race.firstPractice.date.convertToScheduleDetails())")
+        
+        if race.sprint == nil {
             scheduleStackView.addArrangedSubview(fp2View)
-            scheduleStackView.addArrangedSubview(sprintView)
-            scheduleStackView.addArrangedSubview(raceView)
+            fp2View.configure(practiceNameText: "SECOND PRACTICE", dateText: "\(race.secondPractice!.date.convertToScheduleDetails())")
 
-            fp1View.configure(practiceNameText: "FIRST PRACTICE", dateText: "\(race.firstPractice!.date.scheduleDateFormatter()) - \(race.firstPractice!.time.scheduleDetailsTimeFormatter())")
-            
-            fp2View.configure(practiceNameText: "SPRINT QUALIFYING", dateText: "\(race.secondPractice!.date.scheduleDateFormatter()) - \(race.secondPractice!.time.scheduleDetailsTimeFormatter())")
-            
-            qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(race.qualifying!.date.scheduleDateFormatter()) - \(race.qualifying!.time.scheduleDetailsTimeFormatter())")
-
-            sprintView.configure(practiceNameText: "SPRINT", dateText: "\(race.sprint!.date.scheduleDateFormatter()) - \(race.sprint!.time.scheduleDetailsTimeFormatter())")
-
-            raceView.configure(practiceNameText: "RACE", dateText: "\(race.date.scheduleDateFormatter()) - \(race.time.scheduleDetailsTimeFormatter())")
-        } else {
-            scheduleStackView.addArrangedSubview(fp1View)
-            scheduleStackView.addArrangedSubview(fp2View)
             scheduleStackView.addArrangedSubview(fp3View)
-            scheduleStackView.addArrangedSubview(qualifyingView)
-            scheduleStackView.addArrangedSubview(raceView)
-            
-            fp1View.configure(practiceNameText: "FIRST PRACTICE", dateText: "\(race.firstPractice!.date.scheduleDateFormatter()) - \(race.firstPractice!.time.scheduleDetailsTimeFormatter())")
-            
-            fp2View.configure(practiceNameText: "SECOND PRACTICE", dateText: "\(race.secondPractice!.date.scheduleDateFormatter()) - \(race.secondPractice!.time.scheduleDetailsTimeFormatter())")
-            
-            fp3View.configure(practiceNameText: "THIRD PRACTICE", dateText: "\(race.thirdPractice!.date.scheduleDateFormatter()) - \(race.thirdPractice!.time.scheduleDetailsTimeFormatter())")
-            
-            qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(race.qualifying!.date.scheduleDateFormatter()) - \(race.qualifying!.time.scheduleDetailsTimeFormatter())")
-
-            raceView.configure(practiceNameText: "RACE", dateText: "\(race.date.scheduleDateFormatter()) - \(race.time.scheduleDetailsTimeFormatter())")
+            fp3View.configure(practiceNameText: "THIRD PRACTICE", dateText: "\(race.thirdPractice!.date.convertToScheduleDetails())")
         }
+        
+        if race.sprint != nil {
+            scheduleStackView.addArrangedSubview(qualifyingView)
+            qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(race.qualifying.date.convertToScheduleDetails())")
+            
+            scheduleStackView.addArrangedSubview(sprintQualifyingView)
+            sprintQualifyingView.configure(practiceNameText: "SPRINT QUALIFYING", dateText: "\(race.sprintQualifying!.date.convertToScheduleDetails())")
+
+            scheduleStackView.addArrangedSubview(sprintView)
+            sprintView.configure(practiceNameText: "SPRINT", dateText: "\(race.sprint!.date.convertToScheduleDetails())")
+        }
+        
+        scheduleStackView.addArrangedSubview(qualifyingView)
+        qualifyingView.configure(practiceNameText: "QUALIFYING", dateText: "\(race.qualifying.date.convertToScheduleDetails())")
+
+        scheduleStackView.addArrangedSubview(raceView)
+        raceView.configure(practiceNameText: "RACE", dateText: "\(race.date.convertToScheduleDetails())")
     }
 }

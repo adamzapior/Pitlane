@@ -7,23 +7,8 @@
 
 import Foundation
 
-// MARK: - Circuit
 struct CircuitModel: Codable {
     let circuitID: String
-    let url: String
     let circuitName: String
     let location: LocationModel
-
-    enum CodingKeys: String, CodingKey {
-        case circuitID = "circuitId"
-        case url, circuitName
-        case location = "Location"
-    }
-}
-
-// MARK: - Circuit
-struct CircuitModel1: Codable {
-    let circuitID: String
-    let circuitName: String
-    let location: LocationModel1
 }
