@@ -45,37 +45,101 @@ class ResultsVC: UIViewController {
     
     // MARK: Networking & Data setup
     
+//    private func getResults() async {
+//        async let getRaceResult: NetworkResult<[RaceResultModel]> = repository.getRaceResult()
+//        async let getQualifyingResult: NetworkResult<[QualifyingResultModel]> = repository.getQualifyingResult()
+//        async let getSprintResult: NetworkResult<[SprintResultModel]> = repository.getSprintResult()
+//        
+//        let raceResult = await getRaceResult
+//        let qualifyingResult = await getQualifyingResult
+//        let sprintResult = await getSprintResult
+//        
+//        switch (raceResult, qualifyingResult, sprintResult) {
+//        case let (.success(raceResult), .success(qualifyingResult), .success(sprintResult)):
+//            self.raceResult = raceResult
+//            self.qualifyingResult = qualifyingResult
+//            self.sprintResult = sprintResult
+//
+//            DispatchQueue.main.async {
+//                self.activityIndicator.stopAnimating()
+//                self.tableView.isHidden = false
+//                self.errorLabel.isHidden = true
+//                self.tableView.reloadData()
+//            }
+//            
+//        case (.failure(_), _, _):
+//            print("Error fetching race result")
+//            updateUIForError()
+//        case (_, .failure(_), _):
+//            print("Error fetching qualifying result")
+//            updateUIForError()
+//        case (_, _, .failure(_)):
+//            print("Error fetching sprint result")
+//            updateUIForError()
+//        }
+//    }
+    
     private func getResults() async {
-        async let getRaceResult: NetworkResult<[RaceResultModel]> = repository.getRaceResult()
-        async let getQualifyingResult: NetworkResult<[QualifyingResultModel]> = repository.getQualifyingResult()
-        async let getSprintResult: NetworkResult<[SprintResultModel]> = repository.getSprintResult()
-        
-        let raceResult = await getRaceResult
-        let qualifyingResult = await getQualifyingResult
-        let sprintResult = await getSprintResult
-        
-        switch (raceResult, qualifyingResult, sprintResult) {
-        case let (.success(raceResult), .success(qualifyingResult), .success(sprintResult)):
-            self.raceResult = raceResult
-            self.qualifyingResult = qualifyingResult
-            self.sprintResult = sprintResult
-
+        do {
+            try await withThrowingTaskGroup(of: Void.self, body: { group in
+                group.addTask { try await self.handleRaceResult() }
+                group.addTask { try await self.handleQualifyingResult() }
+                group.addTask { try await self.handleSprintResult() }
+                
+                for try await _ in group { }
+            })
+            // Aktualizacja UI po pomyślnym pobraniu wszystkich wyników
             DispatchQueue.main.async {
-                self.activityIndicator.stopAnimating()
-                self.tableView.isHidden = false
-                self.errorLabel.isHidden = true
                 self.tableView.reloadData()
+                self.activityIndicator.stopAnimating()
+                self.errorLabel.isHidden = true
+                
+                for i in self.raceResult {
+                    print(i.raceName)
+                }
             }
-            
-        case (.failure(_), _, _):
-            print("Error fetching race result")
-            updateUIForError()
-        case (_, .failure(_), _):
-            print("Error fetching qualifying result")
-            updateUIForError()
-        case (_, _, .failure(_)):
-            print("Error fetching sprint result")
-            updateUIForError()
+        } catch {
+            // Tutaj obsługujemy wszelkie nieprzechwycone wcześniej błędy.
+            print("Wystąpił nieoczekiwany błąd: \(error)")
+            DispatchQueue.main.async {
+                self.updateUIForError()
+            }
+        }
+    }
+    
+    private func handleRaceResult() async throws {
+        do {
+            let raceResults = try await self.repository.getRaceResult().get()
+            DispatchQueue.main.async {
+                self.raceResult = raceResults
+            }
+        } catch {
+            print("Błąd podczas pobierania wyników wyścigu: \(error)")
+            throw error // Rzucamy błąd dalej, aby można było go obsłużyć wyżej.
+        }
+    }
+
+    private func handleQualifyingResult() async throws {
+        do {
+            let qualifyingResults = try await self.repository.getQualifyingResult().get()
+            DispatchQueue.main.async {
+                self.qualifyingResult = qualifyingResults
+            }
+        } catch {
+            print("Błąd podczas pobierania wyników kwalifikacji: \(error)")
+            throw error
+        }
+    }
+
+    private func handleSprintResult() async throws {
+        do {
+            let sprintResults = try await self.repository.getSprintResult().get()
+            DispatchQueue.main.async {
+                self.sprintResult = sprintResults
+            }
+        } catch {
+            print("Błąd podczas pobierania wyników sprintu: \(error)")
+            throw error
         }
     }
     
@@ -166,4 +230,10 @@ extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return 128
     }
+}
+
+
+enum ResultsState {
+    case success(race: [RaceResultModel], qualifying: [QualifyingResultModel], sprint: [SprintResultModel])
+    case failure(Error)
 }
