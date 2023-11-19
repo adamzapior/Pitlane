@@ -9,7 +9,6 @@ import SnapKit
 import UIKit
 
 class ScheduleVC: UIViewController {
-    
     var repository: Repository
         
     private var raceSchedule: [ScheduleModel] = []
@@ -62,7 +61,7 @@ class ScheduleVC: UIViewController {
                 self.errorLabel.isHidden = true
             }
             
-        case .failure(_):
+        case .failure:
             DispatchQueue.main.async {
                 self.errorLabel.isHidden = false
                 self.activityIndicator.stopAnimating()
@@ -73,14 +72,14 @@ class ScheduleVC: UIViewController {
     private func filterFutureSchedule(schedule: [ScheduleModel]) -> [ScheduleModel] {
         let today = Date()
         return schedule.filter { race in
-            return race.date >= today
+            race.date >= today
         }
     }
     
     private func filterPastSchedule(schedule: [ScheduleModel]) -> [ScheduleModel] {
         let today = Date()
         let pastSchedule = schedule.filter { race in
-            return race.date < today
+            race.date < today
         }
         return pastSchedule.reversed()
     }
@@ -109,6 +108,10 @@ class ScheduleVC: UIViewController {
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identifier)
         tableView.isHidden = true
         tableView.showsVerticalScrollIndicator = false
+        
+//        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        tableView.estimatedRowHeight = 64.0
+        tableView.rowHeight = UITableView.automaticDimension
     }
     
     private func setupActivityIndicator() {
@@ -199,7 +202,11 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-        return 64
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_: UITableView, estimatedHeightForRowAt _: IndexPath) -> CGFloat {
+        return 64.0
     }
 }
 

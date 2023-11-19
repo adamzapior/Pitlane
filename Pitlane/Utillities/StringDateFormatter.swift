@@ -22,6 +22,12 @@ extension Date {
         dateFormatter.dateFormat = "dd MMM - h:mm a"
         return dateFormatter.string(from: self).uppercased()
     }
+    
+    func getYearString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy"
+        return dateFormatter.string(from: self)
+    }
 }
 
 extension String {

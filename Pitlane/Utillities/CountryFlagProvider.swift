@@ -22,7 +22,7 @@ class CountryFlagProvider {
         "Spain": "ES",
         "Canada": "CA",
         "Austria": "AT",
-        "UK": "UK",
+        "UK": "GB",
         "Hungary": "HU",
         "Belgium": "BE",
         "Netherlands": "NL",

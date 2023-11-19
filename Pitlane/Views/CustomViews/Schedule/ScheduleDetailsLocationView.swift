@@ -10,7 +10,7 @@ import FlagKit
 
 class ScheduleDetailsLocationView: UIView {
 
-    let flagImage = UIImageView()
+    let flagImage = FlagImageView(frame: .zero)
     let titleLabel = UILabel()
     let locationNameLabel = UILabel()
     
@@ -42,10 +42,7 @@ class ScheduleDetailsLocationView: UIView {
     
     private func setupFlagImage() {
         addSubview(flagImage)
-        
-        flagImage.layer.masksToBounds = true
-        flagImage.layer.cornerRadius = 6
-        
+
         flagImage.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(18)
             make.centerY.equalTo(self)
@@ -64,7 +61,6 @@ class ScheduleDetailsLocationView: UIView {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(self.snp.top).offset(12)
             make.leading.equalTo(flagImage.snp.trailing).offset(18)
-//            make.centerY.equalTo(flagImage).offset(-15)
         }
     }
     
@@ -79,7 +75,6 @@ class ScheduleDetailsLocationView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(8)
             make.leading.equalTo(flagImage.snp.trailing).offset(18)
             make.bottom.equalTo(self.snp.bottom).offset(-12)
-//            make.centerY.equalTo(flagImage).offset(10)
         }
     }
 }

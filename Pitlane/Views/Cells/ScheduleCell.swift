@@ -9,43 +9,15 @@ import FlagKit
 import UIKit
 
 class ScheduleCell: UITableViewCell {
-
     static let identifier = "ScheduleCell"
 
     var cellType: CellType = .future
 
-    private let containerView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 12
-        return view
-    }()
+    private let flagImage = FlagImageView(frame: .zero)
 
-    private let flagImage: UIImageView = {
-        let flag = UIImageView()
-        flag.layer.masksToBounds = true
-        flag.layer.cornerRadius = 6
-        return flag
-    }()
-
-    private let raceLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        return label
-    }()
-
-    private let circuitLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .footnote).pointSize, weight: .regular)
-        label.adjustsFontForContentSizeCategory = true
-        label.textColor = .UI.secondaryText
-        return label
-    }()
-
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        return label
-    }()
+    private let raceLabel = CellTextLabel(fontStyle: .body, fontWeight: .semibold, textColor: .UI.primaryText)
+    private let circuitLabel = CellTextLabel(fontStyle: .footnote, fontWeight: .regular, textColor: .UI.secondaryText, maxContentSizeCategory: .accessibilityExtraLarge)
+    private let dateLabel = CellTextLabel(fontStyle: .footnote, fontWeight: .light, textColor: .UI.primaryText, textAlignment: .right, maxContentSizeCategory: .accessibilityLarge)
 
     // MARK: - Lifecycle
 
@@ -76,43 +48,49 @@ class ScheduleCell: UITableViewCell {
         cellType = type
         raceLabel.text = model.raceName
         circuitLabel.text = "\(model.round) - \(model.circuit.circuitName)"
-        dateLabel.text = model.date.convertDateToScheduleString()
+        dateLabel.text = "\(model.date.convertDateToScheduleString()) - \(model.date.convertDateToScheduleString())"
 
         flagImage.image = CountryFlagProvider.shared.countryFlag(for: model.circuit.location.country)
     }
 
     private func setupUI() {
-        addSubview(containerView)
-        containerView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.left.equalToSuperview().offset(5)
-            make.right.equalToSuperview().offset(-5)
-        }
-
-        containerView.addSubview(flagImage)
-        containerView.addSubview(raceLabel)
-        containerView.addSubview(circuitLabel)
-        containerView.addSubview(dateLabel)
+        contentView.addSubview(flagImage)
+        contentView.addSubview(raceLabel)
+        contentView.addSubview(circuitLabel)
+        contentView.addSubview(dateLabel)
 
         flagImage.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(18)
+            make.leading.equalTo(contentView.snp.leading).offset(18)
             make.centerY.equalToSuperview()
             make.size.equalTo(CGSize(width: 28, height: 24))
         }
+        
 
         raceLabel.snp.makeConstraints { make in
             make.leading.equalTo(flagImage.snp.trailing).offset(18)
-            make.bottom.equalTo(flagImage.snp.centerY).offset(2)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-18)
+            make.top.equalTo(contentView.snp.top).offset(12)
+
         }
 
         circuitLabel.snp.makeConstraints { make in
             make.leading.equalTo(flagImage.snp.trailing).offset(18)
-            make.bottom.equalTo(flagImage.snp.centerY).offset(22)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-18)
+            make.top.equalTo(raceLabel.snp.bottom).offset(6)
+//            make.trailing.lessThanOrEqualTo(dateLabel.snp.leading).offset(-8)
         }
 
+//        dateLabel.snp.makeConstraints { make in
+//            make.trailing.equalTo(contentView.snp.trailing).offset(-18)
+//            make.top.equalTo(circuitLabel.snp.bottom).offset(4)
+//            make.width.greaterThanOrEqualTo(128)
+//            make.bottom.equalTo(contentView.snp.bottom).offset(-18)
+//        }
+        
         dateLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(circuitLabel.snp.centerY)
-            make.trailing.equalToSuperview().offset(-18)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-18)
+            make.top.equalTo(circuitLabel.snp.bottom).offset(6)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-12)
         }
     }
 }

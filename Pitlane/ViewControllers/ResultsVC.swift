@@ -45,68 +45,6 @@ class ResultsVC: UIViewController {
     
     // MARK: Networking & Data setup
     
-//    private func getResults() async {
-//        async let getRaceResult: NetworkResult<[RaceResultModel]> = repository.getRaceResult()
-//        async let getQualifyingResult: NetworkResult<[QualifyingResultModel]> = repository.getQualifyingResult()
-//        async let getSprintResult: NetworkResult<[SprintResultModel]> = repository.getSprintResult()
-//        
-//        let raceResult = await getRaceResult
-//        let qualifyingResult = await getQualifyingResult
-//        let sprintResult = await getSprintResult
-//        
-//        switch (raceResult, qualifyingResult, sprintResult) {
-//        case let (.success(raceResult), .success(qualifyingResult), .success(sprintResult)):
-//            self.raceResult = raceResult
-//            self.qualifyingResult = qualifyingResult
-//            self.sprintResult = sprintResult
-//
-//            DispatchQueue.main.async {
-//                self.activityIndicator.stopAnimating()
-//                self.tableView.isHidden = false
-//                self.errorLabel.isHidden = true
-//                self.tableView.reloadData()
-//            }
-//            
-//        case (.failure(_), _, _):
-//            print("Error fetching race result")
-//            updateUIForError()
-//        case (_, .failure(_), _):
-//            print("Error fetching qualifying result")
-//            updateUIForError()
-//        case (_, _, .failure(_)):
-//            print("Error fetching sprint result")
-//            updateUIForError()
-//        }
-//    }
-    
-    private func getResults() async {
-        do {
-            try await withThrowingTaskGroup(of: Void.self, body: { group in
-                group.addTask { try await self.handleRaceResult() }
-                group.addTask { try await self.handleQualifyingResult() }
-                group.addTask { try await self.handleSprintResult() }
-                
-                for try await _ in group { }
-            })
-            // Aktualizacja UI po pomyślnym pobraniu wszystkich wyników
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.activityIndicator.stopAnimating()
-                self.errorLabel.isHidden = true
-                
-                for i in self.raceResult {
-                    print(i.raceName)
-                }
-            }
-        } catch {
-            // Tutaj obsługujemy wszelkie nieprzechwycone wcześniej błędy.
-            print("Wystąpił nieoczekiwany błąd: \(error)")
-            DispatchQueue.main.async {
-                self.updateUIForError()
-            }
-        }
-    }
-    
     private func handleRaceResult() async throws {
         do {
             let raceResults = try await self.repository.getRaceResult().get()
@@ -114,8 +52,7 @@ class ResultsVC: UIViewController {
                 self.raceResult = raceResults
             }
         } catch {
-            print("Błąd podczas pobierania wyników wyścigu: \(error)")
-            throw error // Rzucamy błąd dalej, aby można było go obsłużyć wyżej.
+            throw error
         }
     }
 
@@ -126,7 +63,6 @@ class ResultsVC: UIViewController {
                 self.qualifyingResult = qualifyingResults
             }
         } catch {
-            print("Błąd podczas pobierania wyników kwalifikacji: \(error)")
             throw error
         }
     }
@@ -138,10 +74,42 @@ class ResultsVC: UIViewController {
                 self.sprintResult = sprintResults
             }
         } catch {
-            print("Błąd podczas pobierania wyników sprintu: \(error)")
             throw error
         }
     }
+    
+    private func getResults() async {
+        do {
+            try await withThrowingTaskGroup(of: Void.self, body: { group in
+                group.addTask { try await self.handleRaceResult() }
+                group.addTask { try await self.handleQualifyingResult() }
+                group.addTask { try await self.handleSprintResult() }
+                
+                try await group.waitForAll()
+            })
+            // Aktualizacja UI po pomyślnym pobraniu wszystkich wyników
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.activityIndicator.stopAnimating()
+                self.errorLabel.isHidden = true
+                self.tableView.isHidden = false
+                
+                for i in self.raceResult {
+                    print(i.raceName)
+                }
+                
+                for s in self.sprintResult {
+                    print(s.raceName)
+                }
+            }
+        } catch {
+            print("Wystąpił nieoczekiwany błąd: \(error)")
+            DispatchQueue.main.async {
+                self.updateUIForError()
+            }
+        }
+    }
+
     
     private func updateUIForError() {
         DispatchQueue.main.async {
@@ -154,7 +122,7 @@ class ResultsVC: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = UIColor.UI.background
-        title = "Result"
+        title = "Results"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         setupTableView()
@@ -203,6 +171,8 @@ class ResultsVC: UIViewController {
     }
 }
 
+// MARK: TableView setup
+
 extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return raceResult.count
@@ -222,6 +192,8 @@ extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
         let detailsVC = ResultsDetailsVC()
         detailsVC.raceResult = raceResult[indexPath.row]
         detailsVC.qualifyingResult = qualifyingResult[indexPath.row]
+        detailsVC.sprintResult = findSprintResult(forRace: raceResult[indexPath.row])
+
         
         navigationController?.pushViewController(detailsVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
@@ -230,6 +202,23 @@ extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return 128
     }
+}
+
+// MARK: didSelectRow Helper
+extension ResultsVC {
+    func findSprintResult(forRace race: RaceResultModel) -> SprintResultModel? {
+        for sprint in sprintResult {
+            if sprint.raceName == race.raceName {
+                return sprint
+            }
+        }
+        return nil
+    }
+    
+//    func extractRaceResult(for model: RaceResultModel) -> [RaceResultDataModel] {
+//        
+//    }
+//    return
 }
 
 

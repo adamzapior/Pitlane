@@ -30,13 +30,15 @@ class ResultsDetailsVC: UIViewController {
     
 
     private func setupUI() {
-        navigationItem.title = raceResult.raceName
+        title = "\(raceResult.raceName.replacingOccurrences(of: "Grand Prix", with: "GP"))"
+        
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.sizeToFit()
-
+        navigationController?.navigationBar.tintColor = .red
         
         setupTableView()
+        setupSegmentedControl()
+        
     }
     
     private func setupTableView() {
@@ -46,8 +48,8 @@ class ResultsDetailsVC: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.UI.background
         tableView.allowsSelection = false
-        tableView.register(ResultDetailsCell.self, forCellReuseIdentifier: ResultDetailsCell.identifier)
-        tableView.isHidden = true
+        tableView.register(RaceResultCell.self, forCellReuseIdentifier: RaceResultCell.identifier)
+        tableView.isHidden = false
         tableView.showsVerticalScrollIndicator = false
         
         tableView.addSubview(tableViewHeader)
@@ -71,9 +73,7 @@ class ResultsDetailsVC: UIViewController {
     private func setupSegmentedControl() {
         /// If there is a sprint result, insert the "Sprint" segment, otherwise, ensure it is removed
                 if sprintResult != nil {
-//                    if !segmentedControl.containsSegment(withTitle: "Sprint") {
                         segmentedControl.insertSegment(withTitle: "Sprint", at: 1, animated: false)
-//                    }
                 } else {
                     let sprintIndex = resultType.firstIndex(of: "Sprint")
                     if let index = sprintIndex {
@@ -89,7 +89,7 @@ class ResultsDetailsVC: UIViewController {
             make.right.bottom.equalToSuperview().offset(-10)
         }
 
-        segmentedControl.addTarget(self, action: #selector(standingTypeDidChange(_:)), for: .valueChanged)
+        segmentedControl.addTarget(self, action: #selector(resultTypeDidChange(_:)), for: .valueChanged)
         segmentedControl.selectedSegmentIndex = 0
     }
 
@@ -105,7 +105,7 @@ class ResultsDetailsVC: UIViewController {
     
     // MARK: Selectors & Gesture handling
     
-    @objc private func standingTypeDidChange(_ segmentedControl: UISegmentedControl) {
+    @objc private func resultTypeDidChange(_ segmentedControl: UISegmentedControl) {
         if let sprintIndex = resultType.firstIndex(of: "Sprint"), segmentedControl.selectedSegmentIndex == sprintIndex {
             displayedResultType = .sprint
         } else {
@@ -146,11 +146,12 @@ extension ResultsDetailsVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ResultDetailsCell.identifier, for: indexPath) as? ResultDetailsCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RaceResultCell.identifier, for: indexPath) as? RaceResultCell else {
             fatalError("Custom cell error")
         }
         
-        
+        let resultData = raceResult.results[indexPath.row]
+        cell.configure(with: resultData)
         
         return cell
     }

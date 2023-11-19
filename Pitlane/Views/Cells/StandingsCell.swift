@@ -11,55 +11,15 @@ import UIKit
 
 class StandingsCell: UITableViewCell {
     static let identifier = "StandingsCell"
+        
+    private let flagImage = FlagImageView(frame: .zero)
+    private let bar = StandingsBarView(frame: .zero)
+    private let barBackground = UIView()
     
-    private let containerView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 12
-        return view
-    }()
+    private let positionLabel = CellTextLabel(fontStyle: .subheadline, fontWeight: .light, textColor: .UI.primaryText)
+    private let nameLabel = CellTextLabel(fontStyle: .body, fontWeight: .semibold, textColor: .UI.primaryText)
+    private let pointsLabel = CellTextLabel(fontStyle: .subheadline, fontWeight: .light, textColor: .UI.primaryText)
     
-    private let bar: UIView = {
-        let view = UIView()
-        view.backgroundColor = .red
-        view.layer.cornerRadius = 6
-        return view
-    }()
-
-    private let barBackground: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    private let positionLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        return label
-    }()
-
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        return label
-    }()
-
-    private let surnameLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        return label
-    }()
-
-    private let pointsLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        return label
-    }()
-    
-    private let flagImage: UIImageView = {
-        let flag = UIImageView()
-        flag.layer.masksToBounds = true
-        flag.layer.cornerRadius = 6
-        return flag
-    }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -74,8 +34,7 @@ class StandingsCell: UITableViewCell {
     
     func configureDriverCell(with model: DriverStandingModel, maxPoints: Int) {
         positionLabel.text = model.position
-        nameLabel.text = model.driver.name
-        surnameLabel.text = model.driver.surname
+        nameLabel.text = "\(model.driver.name) \(model.driver.surname)"
         pointsLabel.text = model.points
         
         flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
@@ -93,7 +52,6 @@ class StandingsCell: UITableViewCell {
     func configureConstuctorCell(with model: ConstructorStandingModel, maxPoints: Int) {
         positionLabel.text = model.position
         nameLabel.text = model.constructor.name
-        surnameLabel.text = ""
         pointsLabel.text = model.points
         
         flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.constructor.nationality)
@@ -126,22 +84,14 @@ class StandingsCell: UITableViewCell {
     }
 
     private func setupUI() {
-        addSubview(containerView)
-        containerView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(32)
-            make.bottom.equalToSuperview().offset(-32)
-            make.left.equalToSuperview().offset(5)
-            make.right.equalToSuperview().offset(-5)
-        }
-       
-        containerView.addSubview(positionLabel)
-        containerView.addSubview(nameLabel)
-        containerView.addSubview(surnameLabel)
-        containerView.addSubview(pointsLabel)
-        containerView.addSubview(flagImage)
+        addSubview(positionLabel)
+        addSubview(nameLabel)
+        addSubview(pointsLabel)
+        addSubview(flagImage)
+        addSubview(barBackground)
 
         positionLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
+            make.leading.equalToSuperview().offset(12)
             make.centerY.equalToSuperview()
             make.width.size.equalTo(24)
         }
@@ -154,23 +104,17 @@ class StandingsCell: UITableViewCell {
         }
 
         nameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(flagImage.snp.trailing).offset(18)
-            make.bottom.equalTo(flagImage.snp.centerY).offset(2)
-        }
-
-        surnameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
+            make.leading.equalTo(flagImage.snp.trailing).offset(12)
             make.bottom.equalTo(flagImage.snp.centerY).offset(2)
         }
 
         pointsLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16)
+            make.trailing.equalToSuperview().offset(-12)
             make.centerY.equalToSuperview()
         }
         
-        containerView.addSubview(barBackground)
         barBackground.snp.makeConstraints { make in
-            make.leading.equalTo(flagImage.snp.trailing).offset(18)
+            make.leading.equalTo(flagImage.snp.trailing).offset(12)
             make.bottom.equalTo(flagImage.snp.centerY).offset(14)
             make.trailing.equalToSuperview().offset(-64)
             make.height.equalTo(4)
