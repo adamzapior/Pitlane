@@ -53,6 +53,8 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        
+        view.maximumContentSizeCategory = .extraExtraExtraLarge
     }
     
     // MARK: - UI Setup

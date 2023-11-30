@@ -11,7 +11,6 @@ class CellTextLabel: UILabel {
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
-        maximumContentSizeCategory = .extraSmall
     }
 
     @available(*, unavailable)
@@ -19,12 +18,11 @@ class CellTextLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
 
-    convenience init(fontStyle: UIFont.TextStyle, fontWeight: UIFont.Weight, textColor: UIColor!, textAlignment: NSTextAlignment? = nil, maxContentSizeCategory: UIContentSizeCategory? = nil) {
+    convenience init(fontStyle: UIFont.TextStyle, fontWeight: UIFont.Weight, textColor: UIColor!, textAlignment: NSTextAlignment? = nil) {
         self.init(frame: .zero)
-        self.font = UIFont.preferredFont(forTextStyle: fontStyle)
+        self.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: fontStyle).pointSize, weight: fontWeight)
         self.textColor = textColor
         self.textAlignment = textAlignment ?? .natural
-        self.maximumContentSizeCategory = maxContentSizeCategory ?? .accessibilityExtraExtraExtraLarge
     }
 
     private func configure() {

@@ -199,8 +199,12 @@ extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+//    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+//        return 128
+//    }
+    
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-        return 128
+        return UITableView.automaticDimension
     }
 }
 

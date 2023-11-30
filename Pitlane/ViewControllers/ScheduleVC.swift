@@ -151,7 +151,7 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         let scheduleType = ScheduleType.allCases[section]
         switch scheduleType {
         case .future:
-            return "Future Races"
+            return futureRaces.isEmpty ? nil : "Future Races"
         case .past:
             return "Past Races"
         }
@@ -205,9 +205,9 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
 
-    func tableView(_: UITableView, estimatedHeightForRowAt _: IndexPath) -> CGFloat {
-        return 64.0
-    }
+//    func tableView(_: UITableView, estimatedHeightForRowAt _: IndexPath) -> CGFloat {
+//        return 64.0
+//    }
 }
 
 private enum ScheduleType: CaseIterable {

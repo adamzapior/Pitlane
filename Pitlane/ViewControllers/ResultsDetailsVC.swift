@@ -26,6 +26,7 @@ class ResultsDetailsVC: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+
     }
     
 
@@ -156,9 +157,15 @@ extension ResultsDetailsVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+//    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+//        return 64
+//    }
+    
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-        return 64
+        return UITableView.automaticDimension
     }
+    
+    
 }
 
 private enum DisplayedResultType {

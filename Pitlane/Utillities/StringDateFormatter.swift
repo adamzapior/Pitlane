@@ -19,7 +19,7 @@ extension Date {
     func convertToScheduleDetails() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone.current
-        dateFormatter.dateFormat = "dd MMM - h:mm a"
+        dateFormatter.dateFormat = "dd MMM yyyy - h:mm a"
         return dateFormatter.string(from: self).uppercased()
     }
     
