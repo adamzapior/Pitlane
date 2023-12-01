@@ -69,6 +69,7 @@ class ResultsDetailsVC: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.left.right.bottom.equalToSuperview()
         }
+        
     }
     
     private func setupSegmentedControl() {
@@ -156,10 +157,6 @@ extension ResultsDetailsVC: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
-    
-//    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-//        return 64
-//    }
     
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return UITableView.automaticDimension

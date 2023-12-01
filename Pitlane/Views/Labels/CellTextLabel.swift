@@ -27,9 +27,9 @@ class CellTextLabel: UILabel {
 
     private func configure() {
         adjustsFontForContentSizeCategory = true
-//        adjustsFontSizeToFitWidth = false
         minimumScaleFactor = 0.5
         lineBreakMode = .byWordWrapping
         numberOfLines = 0
+        sizeToFit()
     }
 }
