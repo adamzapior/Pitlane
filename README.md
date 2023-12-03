@@ -20,13 +20,38 @@ This app is designed with <b>MVC pattern</b>.
 ## Screenshots
 
 ### Light mode
-<img src="/Screenshots/ss-lightmode-1-portrait.png?raw=true" width=33% height=33%%> <img src="/Screenshots/ss-lightmode-2-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-lightmode-3-portrait.png?raw=true" width=33% height=33%>
-<img src="/Screenshots/ss-lightmode-4-portrait.png?raw=true" width=33% height=33%%> <img src="/Screenshots/ss-lightmode-5-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-lightmode-6-portrait.png?raw=true" width=33% height=33%>
+
+<p align="center">
+<img src="/Screenshots/ss-lightmode-1-portrait.png?raw=true" width=29% height=29%%>
+&nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-lightmode-2-portrait.png?raw=true" width=29% height=29%%>
+  &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-lightmode-3-portrait.png?raw=true" width=29% height=29%>
+</p>
+
+<p align="center">
+<img src="/Screenshots/ss-lightmode-4-portrait.png?raw=true" width=29% height=29%%>
+&nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-lightmode-5-portrait.png?raw=true" width=29% height=29%%>
+  &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-lightmode-6-portrait.png?raw=true" width=29% height=29%%>
+</p>
 
 ### Dark mode
 
-<img src="/Screenshots/ss-darkmode-1-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-2-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-3-portrait.png?raw=true" width=33% height=33%>
-<img src="/Screenshots/ss-darkmode-4-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-5-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-6-portrait.png?raw=true" width=33% height=33%>
+<p align="center">
+<img src="/Screenshots/ss-darkmode-1-portrait.png?raw=true" width=29% height=29%%>
+&nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-darkmode-2-portrait.png?raw=true" width=29% height=29%%>
+  &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-darkmode-3-portrait.png?raw=true" width=29% height=29%%>
+</p>
 
-
+<p align="center">
+<img src="/Screenshots/ss-darkmode-4-portrait.png?raw=true" width=29% height=29%%>
+&nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-darkmode-5-portrait.png?raw=true" width=29% height=29%%>
+  &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="/Screenshots/ss-darkmode-6-portrait.png?raw=true" width=29% height=29%%>
+</p>
 
