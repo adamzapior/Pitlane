@@ -135,7 +135,7 @@ class ScheduleVC: UIViewController {
         }
         
         if !futureRaces.isEmpty {
-            tableViewHeader.configure(race: futureRaces.first!.raceName, circuit: futureRaces.first!.raceName, date: futureRaces.first!.raceName, location: futureRaces.first!.circuit.location.country)
+            tableViewHeader.configure(race: futureRaces.first!.raceName, circuit: futureRaces.first!.raceName, date: "\(futureRaces.first!.firstPractice.date.convertDateToScheduleString()) - \(futureRaces.first!.date.convertDateToScheduleString())", location: futureRaces.first!.circuit.location.country)
         } else {
 //            tableViewHeader.configure(race: pastRaces.first!.raceName, circuit: pastRaces.first!.circuit.circuitName, date: pastRaces.first!.raceName, location: pastRaces.first!.circuit.location.country)
             tableViewHeader.configure(race: "Yes, I miss Formula One too", circuit: "Check out my other projects", date: "🙈🙉🐵", location: "")

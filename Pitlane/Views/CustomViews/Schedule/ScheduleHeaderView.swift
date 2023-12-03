@@ -92,9 +92,6 @@ class ScheduleHeaderView: UIView {
         raceLabelsStack.addArrangedSubview(circuitLabel)
         raceLabelsStack.addArrangedSubview(dateLabel)
         
-        raceLabel.text = "Alosos"
-        circuitLabel.text = "Who knows"
-        dateLabel.text = "ugabuga"
     }
 
 }
