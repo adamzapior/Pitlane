@@ -1,3 +1,6 @@
+<img src="/Screenshots/readme-label.png?raw=true">
+
+
 # Pitlane
 
 **Simple Formula 1 stats tracker created with UIKit.** This project was my playground for experimenting with UI development and making sure these interfaces are not just visually appealing but also accessible to all users. I implemented variable cell height in UITableViewCell and support for moving words with a dash in places where the size using devices does not allow the words to be displayed on one line. 
@@ -15,6 +18,21 @@
 This app is designed with <b>MVC pattern</b>. 
 
 ## Screenshots
+
+### Light mode
+<img src="/Screenshots/ss-lightmode-1-portrait.png?raw=true" width=33% height=33%%> <img src="/Screenshots/ss-lightmode-2-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-lightmode-3-portrait.png?raw=true" width=33% height=33%>
+<img src="/Screenshots/ss-lightmode-4-portrait.png?raw=true" width=33% height=33%%> <img src="/Screenshots/ss-lightmode-5-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-lightmode-6-portrait.png?raw=true" width=33% height=33%>
+
+### Dark mode
+
+<img src="/Screenshots/ss-darkmode-1-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-2-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-3-portrait.png?raw=true" width=33% height=33%>
+<img src="/Screenshots/ss-darkmode-4-portrait.png?raw=true" width=33% height=33%>
+<img src="/Screenshots/ss-darkmode-5-portrait.png?raw=true" width=33% height=33%>
+<img src="/Screenshots/ss-darkmode-6-portrait.png?raw=true" width=33% height=33%>
+
+
+
+
 
 Work in progress 😘
 
