@@ -124,8 +124,7 @@ class Repository: RepositoryProtocol {
         case .success(let dto):
             let qualifyingResult = dto.mrData.raceTable.races.map { dtoQuali -> QualifyingResultModel in
                 let qualifyingResultData = dtoQuali.qualifyingResults.map { dtoResult in
-                    QualifyingResultDataModel(number: dtoResult.position,
-                                              position: dtoResult.position,
+                    QualifyingResultDataModel(position: dtoResult.position, number: dtoResult.position,
                                               driver: createDriverModel(from: dtoResult.driver),
                                               constructor: createConstructorModel(from: dtoResult.constructor),
                                               q1: dtoResult.q1,
@@ -188,13 +187,60 @@ class Repository: RepositoryProtocol {
         }
     }
     
+//    func getStandings() async -> NetworkResult<([DriverStandingModel], [ConstructorStandingModel])> {
+//        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = getDriverStandings()
+//        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = getConstructorStandings()
+//
+//        do {
+//            let driverStandings = try await driverStandingsResult.get()
+//            let constructorStandings = try await constructorStandingsResult.get()
+//            return .success((driverStandings, constructorStandings))
+//        } catch {
+//            return .failure(error as! NetworkError)
+//        }
+//
+//
+//    }
+    
+    func getStandings() async -> NetworkResult<([DriverStandingModel], [ConstructorStandingModel])> {
+        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = getDriverStandings()
+        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = getConstructorStandings()
+
+        do {
+            let driverStandings = try await driverStandingsResult.get()
+            let constructorStandings = try await constructorStandingsResult.get()
+
+            // Tworzenie mapowania driverCode do constructorID
+            var driverCodeMap = [String: [String]]() // constructorID: [driverCodes]
+            for driverStanding in driverStandings {
+                let constructorID = driverStanding.constructors.constructorID
+                let driverCode = driverStanding.driver.code
+                driverCodeMap[constructorID, default: []].append(driverCode)
+            }
+
+            // Aktualizacja ConstructorStandings z kodami kierowców
+            let updatedConstructorStandings = constructorStandings.map { standing in
+                var updatedStanding = standing
+                let driverCodes = driverCodeMap[standing.constructor.constructorID] ?? []
+                updatedStanding.constructor.driver1code = driverCodes.first
+                updatedStanding.constructor.driver2code = driverCodes.dropFirst().first
+                return updatedStanding
+            }
+
+            return .success((driverStandings, updatedConstructorStandings))
+        } catch {
+            return .failure(error as! NetworkError)
+        }
+    }
+
+    
     func getDriverStandings() async -> NetworkResult<[DriverStandingModel]> {
-        let result: NetworkResult<DriverStandingDto> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .driverStandings))
+        let result: NetworkResult<DriverStandingDto> = await APIHandler.get(APIService.getStandings(standingsType: .driverStandings))
         switch result {
         case .success(let dto):
             let driverStandings = dto.mrData.standingsTable.standingsLists.map {
                 $0.driverStandings.map { standings in
-                    DriverStandingModel(position: standings.position, 
+                    DriverStandingModel(position: standings.position,
                                         points: standings.points,
                                         driver: createDriverModel(from: standings.driver),
                                         constructors: createConstructorModel(from: standings.constructors.first!)) /// dto return array with only one constructor per driver
@@ -207,12 +253,12 @@ class Repository: RepositoryProtocol {
     }
     
     func getConstructorStandings() async -> NetworkResult<[ConstructorStandingModel]> {
-        let result: NetworkResult<ConstructorStandingDto> = await APIHandler.get(APIService.getStandings(year: "2023", standingsType: .constructorStandings))
+        let result: NetworkResult<ConstructorStandingDto> = await APIHandler.get(APIService.getStandings(standingsType: .constructorStandings))
         switch result {
         case .success(let dto):
             let constructorStandings = dto.mrData.standingsTable.standingsLists.map {
                 $0.constructorStandings.map { standings in
-                    ConstructorStandingModel(position: standings.position, 
+                    ConstructorStandingModel(position: standings.position,
                                              points: standings.points,
                                              constructor: createConstructorModel(from: standings.constructor))
                 }
@@ -239,6 +285,7 @@ extension Repository {
     
     private func createDriverModel(from driverDto: DriverDto) -> DriverModel {
         return DriverModel(driverID: driverDto.driverID,
+                           code: driverDto.code,
                            name: driverDto.givenName,
                            surname: driverDto.familyName,
                            nationality: driverDto.nationality)
@@ -247,7 +294,10 @@ extension Repository {
     private func createConstructorModel(from constructorDto: ConstructorDto) -> ConstructorModel {
         return ConstructorModel(constructorID: constructorDto.constructorID,
                                 name: constructorDto.name,
-                                nationality: constructorDto.nationality)
+                                nationality: constructorDto.nationality,
+                                driver1code: nil,
+                                driver2code: nil
+        )
     }
 
     private func createCircuitModel(from circuitDto: CircuitDto) -> CircuitModel {

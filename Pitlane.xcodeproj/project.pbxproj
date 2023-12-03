@@ -10,8 +10,8 @@
 		5805D0FE2B08F85C007AF0A2 /* FlagImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805D0FD2B08F85C007AF0A2 /* FlagImageView.swift */; };
 		5805D1012B08FAE7007AF0A2 /* StandingsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805D1002B08FAE7007AF0A2 /* StandingsBarView.swift */; };
 		5805D1032B08FFD3007AF0A2 /* ResultImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805D1022B08FFD3007AF0A2 /* ResultImageView.swift */; };
-		5805D1062B091413007AF0A2 /* ResultDetailsTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805D1052B091413007AF0A2 /* ResultDetailsTableHeaderView.swift */; };
 		580B16702A183300006A8E76 /* StandingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580B166F2A183300006A8E76 /* StandingsVC.swift */; };
+		583D6D9E2B1CF69E00F1DF52 /* ScheduleHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583D6D9D2B1CF69E00F1DF52 /* ScheduleHeaderView.swift */; };
 		583FE4A62B08052900D0A2A9 /* ResultsDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583FE4A52B08052900D0A2A9 /* ResultsDetailsVC.swift */; };
 		583FE4A82B08114C00D0A2A9 /* RaceResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583FE4A72B08114C00D0A2A9 /* RaceResultCell.swift */; };
 		58601C5C2ABE3C620055B53B /* DriverStandingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58601C5B2ABE3C620055B53B /* DriverStandingModel.swift */; };
@@ -78,8 +78,8 @@
 		5805D0FD2B08F85C007AF0A2 /* FlagImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagImageView.swift; sourceTree = "<group>"; };
 		5805D1002B08FAE7007AF0A2 /* StandingsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsBarView.swift; sourceTree = "<group>"; };
 		5805D1022B08FFD3007AF0A2 /* ResultImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultImageView.swift; sourceTree = "<group>"; };
-		5805D1052B091413007AF0A2 /* ResultDetailsTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultDetailsTableHeaderView.swift; sourceTree = "<group>"; };
 		580B166F2A183300006A8E76 /* StandingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsVC.swift; sourceTree = "<group>"; };
+		583D6D9D2B1CF69E00F1DF52 /* ScheduleHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleHeaderView.swift; sourceTree = "<group>"; };
 		583FE4A52B08052900D0A2A9 /* ResultsDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsDetailsVC.swift; sourceTree = "<group>"; };
 		583FE4A72B08114C00D0A2A9 /* RaceResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceResultCell.swift; sourceTree = "<group>"; };
 		58601C5B2ABE3C620055B53B /* DriverStandingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverStandingModel.swift; sourceTree = "<group>"; };
@@ -159,12 +159,12 @@
 			path = Standings;
 			sourceTree = "<group>";
 		};
-		5805D1042B0913B1007AF0A2 /* Results */ = {
+		583D6D9C2B1CF67F00F1DF52 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
-				5805D1052B091413007AF0A2 /* ResultDetailsTableHeaderView.swift */,
+				583D6D9D2B1CF69E00F1DF52 /* ScheduleHeaderView.swift */,
 			);
-			path = Results;
+			path = Schedule;
 			sourceTree = "<group>";
 		};
 		5857C0742ABD097E00D9E893 /* Remote */ = {
@@ -231,8 +231,8 @@
 		58C6E4D12B08DBFB00F3EF96 /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
-				58F4D8DE2AF809A0002E4E3E /* Schedule */,
-				5805D1042B0913B1007AF0A2 /* Results */,
+				583D6D9C2B1CF67F00F1DF52 /* Schedule */,
+				58F4D8DE2AF809A0002E4E3E /* ScheduleDetails */,
 				5805D0FF2B08FAA8007AF0A2 /* Standings */,
 			);
 			path = CustomViews;
@@ -270,7 +270,6 @@
 				58D500BA2A176E7500D5E10E /* ViewControllers */,
 				58D5009E2A176E2200D5E10E /* Views */,
 				58D500B52A176E5100D5E10E /* Utillities */,
-				58F4D8E12AF8E1A6002E4E3E /* Extensions */,
 				58D500882A176DA700D5E10E /* AppDelegate.swift */,
 				58D5008A2A176DA700D5E10E /* SceneDelegate.swift */,
 				58D500912A176DA900D5E10E /* Assets.xcassets */,
@@ -326,21 +325,14 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		58F4D8DE2AF809A0002E4E3E /* Schedule */ = {
+		58F4D8DE2AF809A0002E4E3E /* ScheduleDetails */ = {
 			isa = PBXGroup;
 			children = (
-				58F4D8E42AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift */,
 				58824D6C2AF6D9E300BA7839 /* ScheduleDetailsView.swift */,
+				58F4D8E42AFC70CF002E4E3E /* ScheduleDetailsLocationView.swift */,
 				58F4D8DC2AF80927002E4E3E /* ScheduleTimetableItemView.swift */,
 			);
-			path = Schedule;
-			sourceTree = "<group>";
-		};
-		58F4D8E12AF8E1A6002E4E3E /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
+			path = ScheduleDetails;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -430,7 +422,6 @@
 				589925112AFFCFE2006D632C /* DriverStandingDto.swift in Sources */,
 				58D500BE2A176E7500D5E10E /* ScheduleVC.swift in Sources */,
 				58601C642ABE632F0055B53B /* ConstructorModel.swift in Sources */,
-				5805D1062B091413007AF0A2 /* ResultDetailsTableHeaderView.swift in Sources */,
 				58C6E4D52B08DDD200F3EF96 /* CellTextLabel.swift in Sources */,
 				58F4D8E32AF9B926002E4E3E /* StringDateFormatter.swift in Sources */,
 				580B16702A183300006A8E76 /* StandingsVC.swift in Sources */,
@@ -460,6 +451,7 @@
 				58D500A72A176E2300D5E10E /* StandingsCell.swift in Sources */,
 				58D5009D2A176E0A00D5E10E /* TabBarVC.swift in Sources */,
 				58601C6A2ABE66720055B53B /* LocationModel.swift in Sources */,
+				583D6D9E2B1CF69E00F1DF52 /* ScheduleHeaderView.swift in Sources */,
 				5805D1012B08FAE7007AF0A2 /* StandingsBarView.swift in Sources */,
 				5899251F2B0061C5006D632C /* SprintResultModel.swift in Sources */,
 				58601C622ABE63200055B53B /* DriverModel.swift in Sources */,

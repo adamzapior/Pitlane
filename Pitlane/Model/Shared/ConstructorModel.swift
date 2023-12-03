@@ -11,4 +11,6 @@ struct ConstructorModel: Codable {
     let constructorID: String
     let name: String
     let nationality: String
+    var driver1code: String?
+    var driver2code: String?
 }

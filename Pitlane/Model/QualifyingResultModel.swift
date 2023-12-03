@@ -12,13 +12,14 @@ struct QualifyingResultModel: Codable {
     let raceName: String
     let circuit: CircuitModel
     let date: Date
-    let qualifyingResults: [QualifyingResultDataModel]
+    var qualifyingResults: [QualifyingResultDataModel]
 
 
 }
 
 struct QualifyingResultDataModel: Codable {
-    let number, position: String
+    var position: String
+    let number: String
     let driver: DriverModel
     let constructor: ConstructorModel
     let q1: String

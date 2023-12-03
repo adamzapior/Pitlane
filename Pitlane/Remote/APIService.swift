@@ -14,7 +14,7 @@ protocol APIServiceProtocol {
     
     static func getResults() -> String
     
-    static func getStandings(year: String, standingsType: StandingsType) -> String
+    static func getStandings(standingsType: StandingsType) -> String
 }
 
 class APIService: APIServiceProtocol {
@@ -38,8 +38,8 @@ class APIService: APIServiceProtocol {
         url("current/qualifying", limit: 500, offset: 0)
     }
     
-    static func getStandings(year: String, standingsType: StandingsType) -> String {
-        url("\(year)/\(standingsType.rawValue)", limit: 100, offset: 0)
+    static func getStandings(standingsType: StandingsType) -> String {
+        url("current/\(standingsType.rawValue)", limit: 100, offset: 0)
     }
 }
 

@@ -21,7 +21,7 @@ class RaceResultCell: UITableViewCell {
     private let statusLabel = CellTextLabel(fontStyle: .subheadline, fontWeight: .regular, textColor: .UI.primaryText)
     private let pointsLabel = CellTextLabel(fontStyle: .subheadline, fontWeight: .regular, textColor: .UI.secondaryText, textAlignment: .center)
     
-    private let raceLabelStack: UIStackView = {
+    private let racerLabelsStack: UIStackView = {
         let sv = UIStackView()
         sv.spacing = 8
         sv.distribution = .fill
@@ -40,7 +40,7 @@ class RaceResultCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(with model: RaceResultDataModel) {
+    func configureRaceData(with model: RaceResultDataModel) {
         positionLabel.text = model.position
         nameLabel.text = "\(model.driver.name) \(model.driver.surname)"
         pointsLabel.text = model.points
@@ -50,16 +50,44 @@ class RaceResultCell: UITableViewCell {
         flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
     }
     
+    func configureSprintData(with model: SprintResultDataModel) {
+        positionLabel.text = model.position
+        nameLabel.text = "\(model.driver.name) \(model.driver.surname)"
+        pointsLabel.text = model.points
+        teamLabel.text = model.constructor.name
+        statusLabel.text = model.time?.time ?? model.status
+
+        flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
+    }
+    
+    func configureWithQualifyingResult(with model: QualifyingResultDataModel, session: QualifyingResultType) {
+        positionLabel.text = model.position
+        nameLabel.text = "\(model.driver.name) \(model.driver.surname)"
+        pointsLabel.text = ""
+        teamLabel.text = model.constructor.name
+
+        flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
+        
+        switch session {
+           case .q3:
+               statusLabel.text = model.q3 ?? model.q2 ?? model.q1
+           case .q2:
+               statusLabel.text = model.q2 ?? model.q1
+           case .q1:
+               statusLabel.text = model.q1 
+           }
+    }
+    
     
     private func setupUI() {
         contentView.addSubview(positionLabel)
         contentView.addSubview(flagImage)
         contentView.addSubview(pointsLabel)
-        contentView.addSubview(raceLabelStack)
+        contentView.addSubview(racerLabelsStack)
 
-        raceLabelStack.addArrangedSubview(nameLabel)
-        raceLabelStack.addArrangedSubview(teamLabel)
-        raceLabelStack.addArrangedSubview(statusLabel)
+        racerLabelsStack.addArrangedSubview(nameLabel)
+        racerLabelsStack.addArrangedSubview(teamLabel)
+        racerLabelsStack.addArrangedSubview(statusLabel)
 
     
         positionLabel.snp.makeConstraints { make in
@@ -81,7 +109,7 @@ class RaceResultCell: UITableViewCell {
 //            make.size.equalTo(CGSize(width: 28, height: 24))
         }
 
-        raceLabelStack.snp.makeConstraints { make in
+        racerLabelsStack.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(12)
             make.leading.equalTo(flagImage.snp.trailing).offset(18)
             make.trailing.equalTo(pointsLabel.snp.leading).offset(-18)
@@ -89,7 +117,7 @@ class RaceResultCell: UITableViewCell {
         }
         
         pointsLabel.snp.makeConstraints { make in
-            make.leading.equalTo(raceLabelStack.snp.trailing).offset(18)
+            make.leading.equalTo(racerLabelsStack.snp.trailing).offset(18)
             make.trailing.equalTo(contentView.snp.trailing).offset(-12)
             make.centerY.equalToSuperview()
             make.width.equalTo(28)

@@ -9,6 +9,7 @@ import Foundation
 
 struct DriverModel: Codable {
     let driverID: String
+    let code: String
     let name: String
     let surname: String
     let nationality: String

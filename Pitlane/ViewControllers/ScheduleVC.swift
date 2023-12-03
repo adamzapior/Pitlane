@@ -16,6 +16,7 @@ class ScheduleVC: UIViewController {
     private var pastRaces: [ScheduleModel] = []
     
     private let tableView = UITableView()
+    private let tableViewHeader = ScheduleHeaderView()
     private let activityIndicator = UIActivityIndicatorView()
     private let errorLabel = UILabel()
     
@@ -34,7 +35,6 @@ class ScheduleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        setupTableView()
         setupUI()
         
         activityIndicator.startAnimating()
@@ -59,6 +59,8 @@ class ScheduleVC: UIViewController {
                 self.activityIndicator.stopAnimating()
                 self.tableView.isHidden = false
                 self.errorLabel.isHidden = true
+                
+                self.setupTableViewHeader()
             }
             
         case .failure:
@@ -66,6 +68,10 @@ class ScheduleVC: UIViewController {
                 self.errorLabel.isHidden = false
                 self.activityIndicator.stopAnimating()
             }
+        }
+        
+        for races in pastRaces {
+            print(races.raceName)
         }
     }
     
@@ -91,11 +97,8 @@ class ScheduleVC: UIViewController {
         title = "Schedule"
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.left.right.bottom.equalToSuperview()
-        }
-        
+        setupTableView()
+        setupTableViewHeader()
         setupActivityIndicator()
         setupErrorLabel()
     }
@@ -109,9 +112,56 @@ class ScheduleVC: UIViewController {
         tableView.isHidden = true
         tableView.showsVerticalScrollIndicator = false
         
-//        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        tableView.estimatedRowHeight = 64.0
-        tableView.rowHeight = UITableView.automaticDimension
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.left.right.bottom.equalToSuperview()
+        }
+    }
+        
+    private func setupTableViewHeader() {
+        
+
+        
+        tableView.addSubview(tableViewHeader)
+        tableViewHeader.backgroundColor = UIColor.UI.background
+        tableView.tableHeaderView = tableViewHeader
+
+        tableViewHeader.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(10)
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.height.equalTo(300)
+        }
+        
+        if !futureRaces.isEmpty {
+            tableViewHeader.configure(race: futureRaces.first!.raceName, circuit: futureRaces.first!.raceName, date: futureRaces.first!.raceName, location: futureRaces.first!.circuit.location.country)
+        } else {
+//            tableViewHeader.configure(race: pastRaces.first!.raceName, circuit: pastRaces.first!.circuit.circuitName, date: pastRaces.first!.raceName, location: pastRaces.first!.circuit.location.country)
+            tableViewHeader.configure(race: "Yes, I miss Formula One too", circuit: "Check out my other projects", date: "🙈🙉🐵", location: "")
+            
+//            tableViewHeader.isHidden = true
+        }
+        
+        let headerTapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
+               tableViewHeader.addGestureRecognizer(headerTapGesture)
+               tableViewHeader.isUserInteractionEnabled = true
+
+//
+//        tableViewHeader.configure(with: ScheduleModel)
+    }
+    
+    @objc private func headerTapped() {
+        // Sprawdzenie, czy lista futureRaces nie jest pusta
+        guard !futureRaces.isEmpty else { return }
+
+        // Pobranie pierwszego wyścigu z listy futureRaces
+        let race = futureRaces.first!
+
+        // Następnie można przejść do szczegółowego widoku wyścigu
+        let detailsVC = ScheduleDetailsVC()
+        detailsVC.race = race
+        navigationController?.pushViewController(detailsVC, animated: true)
     }
     
     private func setupActivityIndicator() {
@@ -161,7 +211,7 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         let scheduleType = ScheduleType.allCases[section]
         switch scheduleType {
         case .future:
-            return futureRaces.count
+            return max(futureRaces.count - 1, 0)
         case .past:
             return pastRaces.count
         }
@@ -175,7 +225,7 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         let scheduleType = ScheduleType.allCases[indexPath.section]
         switch scheduleType {
         case .future:
-            cell.configure(with: futureRaces[indexPath.row], type: .future)
+            cell.configure(with: futureRaces[indexPath.row + 1], type: .future)
         case .past:
             cell.configure(with: pastRaces[indexPath.row], type: .past)
         }
@@ -205,9 +255,6 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
 
-//    func tableView(_: UITableView, estimatedHeightForRowAt _: IndexPath) -> CGFloat {
-//        return 64.0
-//    }
 }
 
 private enum ScheduleType: CaseIterable {

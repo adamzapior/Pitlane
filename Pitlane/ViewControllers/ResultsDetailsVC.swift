@@ -8,10 +8,11 @@
 import UIKit
 
 class ResultsDetailsVC: UIViewController {
-    
     var raceResult: RaceResultModel!
     var qualifyingResult: QualifyingResultModel!
     var sprintResult: SprintResultModel?
+    
+    var qualifyingResultSorted: [QualifyingResultDataModel] = []
     
     private let tableView = UITableView()
     private let tableViewHeader = UIView()
@@ -26,10 +27,10 @@ class ResultsDetailsVC: UIViewController {
         super.viewDidLoad()
 
         setupUI()
-
     }
     
-
+    // MARK: UI Setup
+    
     private func setupUI() {
         title = "\(raceResult.raceName.replacingOccurrences(of: "Grand Prix", with: "GP"))"
         
@@ -39,7 +40,6 @@ class ResultsDetailsVC: UIViewController {
         
         setupTableView()
         setupSegmentedControl()
-        
     }
     
     private func setupTableView() {
@@ -69,20 +69,18 @@ class ResultsDetailsVC: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.left.right.bottom.equalToSuperview()
         }
-        
     }
     
     private func setupSegmentedControl() {
         /// If there is a sprint result, insert the "Sprint" segment, otherwise, ensure it is removed
-                if sprintResult != nil {
-                        segmentedControl.insertSegment(withTitle: "Sprint", at: 1, animated: false)
-                } else {
-                    let sprintIndex = resultType.firstIndex(of: "Sprint")
-                    if let index = sprintIndex {
-                        segmentedControl.removeSegment(at: index, animated: false)
-                        resultType.remove(at: index) // Remove "Sprint" from the displayedResultType
-                    }
-                }
+        let sprintIndex = resultType.firstIndex(of: "Sprint") ?? resultType.count
+        if sprintResult != nil && sprintIndex == resultType.count {
+            segmentedControl.insertSegment(withTitle: "Sprint", at: 1, animated: false)
+            resultType.insert("Sprint", at: 1)
+        } else if sprintResult == nil && sprintIndex < resultType.count {
+            segmentedControl.removeSegment(at: sprintIndex, animated: false)
+            resultType.remove(at: sprintIndex)
+        }
         
         tableViewHeader.addSubview(segmentedControl)
 
@@ -105,44 +103,75 @@ class ResultsDetailsVC: UIViewController {
         }
     }
     
+    // MARK: Filter methods
+    
+    private func filterQualifyingResult(result: QualifyingResultModel, qualiSession: QualifyingResultType) -> [QualifyingResultDataModel] {
+        var sortedResults: [QualifyingResultDataModel]
+        
+        switch qualiSession {
+        case .q3:
+            sortedResults = result.qualifyingResults
+                .sorted(by: { first, second -> Bool in
+                    let firstTime = first.q3 ?? first.q2 ?? first.q1
+                    let secondTime = second.q3 ?? second.q2 ?? second.q1
+                    return firstTime < secondTime
+                })
+        case .q2:
+            sortedResults = result.qualifyingResults
+                .sorted(by: { first, second -> Bool in
+                    let firstTime = first.q2 ?? first.q1
+                    let secondTime = second.q2 ?? second.q1
+                    return firstTime < secondTime
+                })
+        case .q1:
+            sortedResults = result.qualifyingResults
+                .sorted { $0.q1 < $1.q1 }
+        }
+        
+        return sortedResults.enumerated().map { index, model -> QualifyingResultDataModel in
+            var updatedModel = model
+            updatedModel.position = "\(index + 1)" // Ustawienie pozycji zaczynając od 1
+            return updatedModel
+        }
+    }
+
     // MARK: Selectors & Gesture handling
     
     @objc private func resultTypeDidChange(_ segmentedControl: UISegmentedControl) {
-        if let sprintIndex = resultType.firstIndex(of: "Sprint"), segmentedControl.selectedSegmentIndex == sprintIndex {
-            displayedResultType = .sprint
-        } else {
-            switch segmentedControl.selectedSegmentIndex {
-                case 0:
-                    displayedResultType = .race
-                case 1 where sprintResult == nil: // Adjust for missing "Sprint"
-                    displayedResultType = .q3
-                case 2:
-                    displayedResultType = .q2
-                case 3:
-                    displayedResultType = .q1
-                default:
-                    break
-            }
-        }
+        let selectedSegmentTitle = segmentedControl.titleForSegment(at: segmentedControl.selectedSegmentIndex)
+
+           switch selectedSegmentTitle {
+           case "Sprint":
+               displayedResultType = .sprint
+           case "Race":
+               displayedResultType = .race
+           case "Q3":
+               qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q3)
+               displayedResultType = .q3
+           case "Q2":
+               qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q2)
+               displayedResultType = .q2
+           case "Q1":
+               qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q1)
+               displayedResultType = .q1
+           default:
+               break
+           }
+        
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
     }
-
 }
 
 extension ResultsDetailsVC: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         switch displayedResultType {
         case .race:
             return raceResult.results.count
         case .sprint:
             return sprintResult!.sprintResults.count
-        case .q3:
-            return qualifyingResult.qualifyingResults.count
-        case .q2:
-            return qualifyingResult.qualifyingResults.count
-        case .q1:
+        case .q3, .q2, .q1:
             return qualifyingResult.qualifyingResults.count
         }
     }
@@ -152,17 +181,32 @@ extension ResultsDetailsVC: UITableViewDelegate, UITableViewDataSource {
             fatalError("Custom cell error")
         }
         
-        let resultData = raceResult.results[indexPath.row]
-        cell.configure(with: resultData)
-        
+        switch displayedResultType {
+        case .race:
+            let resultData = raceResult.results[indexPath.row]
+            cell.configureRaceData(with: resultData)
+        case .sprint:
+            guard let sprintData = sprintResult?.sprintResults[indexPath.row] else {
+                fatalError("No sprint data available")
+            }
+            cell.configureSprintData(with: sprintData)
+        case .q3:
+            let qualifyingData = qualifyingResultSorted[indexPath.row]
+            cell.configureWithQualifyingResult(with: qualifyingData, session: .q3)
+        case .q2:
+            let qualifyingData = qualifyingResultSorted[indexPath.row]
+            cell.configureWithQualifyingResult(with: qualifyingData, session: .q2)
+        case .q1:
+            let qualifyingData = qualifyingResultSorted[indexPath.row]
+            cell.configureWithQualifyingResult(with: qualifyingData, session: .q1)
+        }
+           
         return cell
     }
-    
+        
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
-    
 }
 
 private enum DisplayedResultType {
@@ -171,4 +215,25 @@ private enum DisplayedResultType {
     case q3
     case q2
     case q1
+}
+
+enum QualifyingResultType {
+    case q3
+    case q2
+    case q1
+}
+
+extension Array {
+    func partitioned(by belongsInFirstGroup: (Element) -> Bool) -> ([Element], [Element]) {
+        var firstGroup: [Element] = []
+        var secondGroup: [Element] = []
+        for element in self {
+            if belongsInFirstGroup(element) {
+                firstGroup.append(element)
+            } else {
+                secondGroup.append(element)
+            }
+        }
+        return (firstGroup, secondGroup)
+    }
 }

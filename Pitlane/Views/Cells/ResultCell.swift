@@ -74,39 +74,33 @@ class ResultCell: UITableViewCell {
             make.trailing.equalTo(arrowImage.snp.leading).offset(-18)
         }
         
+        
         arrowImage.snp.makeConstraints { make in
             make.centerY.equalTo(contentView.snp.centerY)
-            make.leading.equalTo(circuitLabel.snp.trailing).offset(12)
             make.trailing.equalToSuperview().offset(-18)
-//            make.width.lessThanOrEqualTo(16)
-//            make.width.equalTo(12)
         }
         
         poleImage.snp.makeConstraints { make in
-            make.top.equalTo(circuitLabel.snp.bottom).offset(10)
+            make.top.equalTo(circuitLabel.snp.bottom).offset(12)
             make.centerX.equalTo(flagImage)
-//            make.size.equalTo(CGSize(width: 18, height: 18))
         }
         
         poleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(circuitLabel.snp.leading)
             make.centerY.equalTo(poleImage)
-            make.leading.equalTo(circuitLabel.snp.leading)
         }
-        
-        winnerImage.snp.makeConstraints { make in
-            //            make.top.equalTo(poleImage.snp.bottom).offset(6)
-            make.centerX.equalTo(flagImage)
-            make.centerY.equalTo(winnerLabel)
-//            make.size.equalTo(CGSize(width: 18, height: 18))
-            //            make.bottom.equalTo(contentView.snp.bottom).offset(-6)
-        }
-        
+
         winnerLabel.snp.makeConstraints { make in
-            //            make.centerY.equalTo(winnerImage)
-            make.leading.equalTo(circuitLabel.snp.leading)
-            make.top.equalTo(poleLabel.snp.bottom).offset(6)
-            make.bottom.equalTo(contentView.snp.bottom).offset(-12)
+            make.leading.equalTo(poleLabel.snp.leading)
+            make.centerY.equalTo(winnerImage)
         }
+
+        winnerImage.snp.makeConstraints { make in
+            make.top.equalTo(poleImage.snp.bottom).offset(6)
+            make.centerX.equalTo(poleImage)
+            make.bottom.lessThanOrEqualToSuperview().offset(-12).priority(.high)
+        }
+        
     }
     
     private func adjustFlagImageSize() {

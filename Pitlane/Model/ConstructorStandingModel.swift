@@ -10,5 +10,5 @@ import Foundation
 struct ConstructorStandingModel: Codable {
     let position: String
     let points: String
-    let constructor: ConstructorModel
+    var constructor: ConstructorModel
 }

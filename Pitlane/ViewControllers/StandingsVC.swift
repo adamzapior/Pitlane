@@ -2,6 +2,7 @@ import Foundation
 import SnapKit
 import UIKit
 
+
 class StandingsVC: UIViewController {
     var repository: Repository
 
@@ -46,18 +47,15 @@ class StandingsVC: UIViewController {
             await fetchStandings()
         }
     }
+    
 
     // MARK: Networking & Data setup
-
+    
     private func fetchStandings() async {
-        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStandings()
-        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStandings()
+        let standingsResult = await repository.getStandings()
 
-        let driverResult = await driverStandingsResult
-        let constructorResult = await constructorStandingsResult
-
-        switch (driverResult, constructorResult) {
-            case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
+        switch standingsResult {
+            case let .success((fetchedDriverStandings, fetchedConstructorStandings)):
                 driverStandings = fetchedDriverStandings
                 constructorStandings = fetchedConstructorStandings
                 updateDriverHighestPoints()
@@ -72,15 +70,46 @@ class StandingsVC: UIViewController {
                 }
 
             // Handle errors directly in the VC
-            case let (.failure(driverError), _):
-                print("Error fetching driver standings")
-                updateUIForError(driverError)
-
-            case let (_, .failure(constructorError)):
-                print("Error fetching constructor standings")
-                updateUIForError(constructorError)
+            case let .failure(error):
+                print("Error fetching standings: \(error)")
+                updateUIForError(error)
         }
     }
+
+    
+
+//    private func fetchStandings() async {
+//        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStandings()
+//        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStandings()
+//
+//        let driverResult = await driverStandingsResult
+//        let constructorResult = await constructorStandingsResult
+//
+//        switch (driverResult, constructorResult) {
+//            case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
+//                driverStandings = fetchedDriverStandings
+//                constructorStandings = fetchedConstructorStandings
+//                updateDriverHighestPoints()
+//                updateConstuctorHighestPoints()
+//
+//                // Update the UI directly
+//                DispatchQueue.main.async {
+//                    self.activityIndicator.stopAnimating()
+//                    self.tableView.isHidden = false
+//                    self.errorLabel.isHidden = true
+//                    self.tableView.reloadData()
+//                }
+//
+//            // Handle errors directly in the VC
+//            case let (.failure(driverError), _):
+//                print("Error fetching driver standings")
+//                updateUIForError(driverError)
+//
+//            case let (_, .failure(constructorError)):
+//                print("Error fetching constructor standings")
+//                updateUIForError(constructorError)
+//        }
+//    }
 
     private func updateUIForError(_: Error) {
         DispatchQueue.main.async {
@@ -211,9 +240,9 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
         }
         switch displayedStandingType {
             case .driver:
-                cell.configureDriverCell(with: driverStandings[indexPath.row], maxPoints: highestPoints ?? 1)
+                cell.configureDriverCell(with: driverStandings[indexPath.row])
             case .constructor:
-                cell.configureConstuctorCell(with: constructorStandings[indexPath.row], maxPoints: constuctorHighestPoints ?? 1)
+            cell.configureConstuctorCell(with: constructorStandings[indexPath.row])
         }
 
         return cell

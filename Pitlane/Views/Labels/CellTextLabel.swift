@@ -30,6 +30,5 @@ class CellTextLabel: UILabel {
         minimumScaleFactor = 0.5
         lineBreakMode = .byWordWrapping
         numberOfLines = 0
-        sizeToFit()
     }
 }
