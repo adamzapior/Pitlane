@@ -26,14 +26,7 @@ This app is designed with <b>MVC pattern</b>.
 ### Dark mode
 
 <img src="/Screenshots/ss-darkmode-1-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-2-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-3-portrait.png?raw=true" width=33% height=33%>
-<img src="/Screenshots/ss-darkmode-4-portrait.png?raw=true" width=33% height=33%>
-<img src="/Screenshots/ss-darkmode-5-portrait.png?raw=true" width=33% height=33%>
-<img src="/Screenshots/ss-darkmode-6-portrait.png?raw=true" width=33% height=33%>
+<img src="/Screenshots/ss-darkmode-4-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-5-portrait.png?raw=true" width=33% height=33%> <img src="/Screenshots/ss-darkmode-6-portrait.png?raw=true" width=33% height=33%>
 
-
-
-
-
-Work in progress 😘
 
 
