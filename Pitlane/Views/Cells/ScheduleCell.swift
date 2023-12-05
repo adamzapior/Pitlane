@@ -60,6 +60,9 @@ class ScheduleCell: UITableViewCell {
         dateLabel.text = "\(model.firstPractice.date.convertDateToScheduleString()) - \(model.date.convertDateToScheduleString())"
 
         flagImage.image = CountryFlagProvider.shared.countryFlag(for: model.circuit.location.country)
+        
+        raceLabel.setupHyphenation()
+        circuitLabel.setupHyphenation()
     }
 
     private func setupUI() {
@@ -91,10 +94,6 @@ class ScheduleCell: UITableViewCell {
             make.centerY.equalToSuperview()
             make.width.equalTo(12)
         }
-        
-        /// Content hugging helps to debug view hierarchy
-        /// Visually, the cells look identical and support Dynamic Type in all sizes
-        /// Same issue with automatic row height from StackOverFlow: https://stackoverflow.com/questions/68951886/ambiguous-uilabel-height-in-autoresizing-uitableviewcell
      
         raceLabel.setContentHuggingPriority(.defaultHigh + 3, for: .vertical)
         circuitLabel.setContentHuggingPriority(.defaultHigh + 2, for: .vertical)

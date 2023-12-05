@@ -8,10 +8,8 @@
 import UIKit
 
 class ScheduleHeaderView: UIView {
-
     let imageView = UIImageView()
     let infoView = UIView()
-    
     
     private var flagImage = FlagImageView(frame: .zero)
     private let arrowImage = ResultImageView(systemImage: "chevron.right", color: .UI.theme, textStyle: .title3)
@@ -48,6 +46,8 @@ class ScheduleHeaderView: UIView {
         dateLabel.text = date
         flagImage.image = CountryFlagProvider.shared.countryFlag(for: location)
         
+        raceLabel.setupHyphenation()
+        circuitLabel.setupHyphenation()
     }
     
     private func setupImageView() {
@@ -84,15 +84,12 @@ class ScheduleHeaderView: UIView {
         raceLabelsStack.snp.makeConstraints { make in
             make.top.equalTo(infoView).offset(12)
             make.leading.equalTo(flagImage.snp.trailing).offset(18)
-            make.trailing.equalTo(infoView.snp.trailing).offset(-18) 
+            make.trailing.equalTo(infoView.snp.trailing).offset(-18)
             make.bottom.equalTo(infoView).offset(-12)
         }
         
         raceLabelsStack.addArrangedSubview(raceLabel)
         raceLabelsStack.addArrangedSubview(circuitLabel)
         raceLabelsStack.addArrangedSubview(dateLabel)
-        
     }
-
 }
-

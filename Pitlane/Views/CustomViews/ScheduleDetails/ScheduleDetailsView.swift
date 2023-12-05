@@ -25,6 +25,9 @@ class ScheduleDetailsView: UIView {
     func configure(titleText: String, valueText: String) {
         titleTextLabel.text = titleText
         valueTextLabel.text = valueText
+        
+        titleTextLabel.setupHyphenation()
+        titleTextLabel.setupHyphenation()
     }
     
     private func setupUI() {

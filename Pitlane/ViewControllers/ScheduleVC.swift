@@ -18,7 +18,12 @@ class ScheduleVC: UIViewController {
     private let tableView = UITableView()
     private let tableViewHeader = ScheduleHeaderView()
     private let activityIndicator = UIActivityIndicatorView()
-    private let errorLabel = UILabel()
+    
+    lazy var reloadButton: ReloadButton = {
+        let button = ReloadButton(color: .UI.theme, title: "Something gone wrong, try to reload", systemImageName: "arrow.clockwise")
+        button.addTarget(self, action: #selector(tryRefresh), for: .touchUpInside)
+        return button
+    }()
     
     init(repository: Repository) {
         self.repository = repository
@@ -42,11 +47,14 @@ class ScheduleVC: UIViewController {
         Task {
             await fetchSchedule()
         }
+        
     }
     
     // MARK: Networking & Data setup
     
     func fetchSchedule() async {
+
+        
         let result = await repository.getSchedule()
         switch result {
         case .success(let schedule):
@@ -58,20 +66,14 @@ class ScheduleVC: UIViewController {
                 self.tableView.reloadData()
                 self.activityIndicator.stopAnimating()
                 self.tableView.isHidden = false
-                self.errorLabel.isHidden = true
-                
                 self.setupTableViewHeader()
             }
             
         case .failure:
             DispatchQueue.main.async {
-                self.errorLabel.isHidden = false
+                self.setupReloadButtonIfNeeded()
                 self.activityIndicator.stopAnimating()
             }
-        }
-        
-        for races in pastRaces {
-            print(races.raceName)
         }
     }
     
@@ -100,7 +102,6 @@ class ScheduleVC: UIViewController {
         setupTableView()
         setupTableViewHeader()
         setupActivityIndicator()
-        setupErrorLabel()
     }
     
     private func setupTableView() {
@@ -117,11 +118,31 @@ class ScheduleVC: UIViewController {
             make.top.left.right.bottom.equalToSuperview()
         }
     }
+    
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+
+        activityIndicator.style = .large
+        activityIndicator.color = UIColor.red
+        activityIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+    
+    private func setupReloadButtonIfNeeded() {
+        if reloadButton.superview == nil {
+            view.addSubview(reloadButton)
+            reloadButton.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.centerY.equalToSuperview()
+            }
+        }
         
-    private func setupTableViewHeader() {
-        
+        reloadButton.isHidden = false
+    }
 
         
+    private func setupTableViewHeader() {
         tableView.addSubview(tableViewHeader)
         tableViewHeader.backgroundColor = UIColor.UI.background
         tableView.tableHeaderView = tableViewHeader
@@ -135,57 +156,35 @@ class ScheduleVC: UIViewController {
         }
         
         if !futureRaces.isEmpty {
-            tableViewHeader.configure(race: futureRaces.first!.raceName, circuit: futureRaces.first!.raceName, date: "\(futureRaces.first!.firstPractice.date.convertDateToScheduleString()) - \(futureRaces.first!.date.convertDateToScheduleString())", location: futureRaces.first!.circuit.location.country)
+            tableViewHeader.configure(race: futureRaces.first!.raceName, circuit: futureRaces.first!.circuit.circuitName, date: "\(futureRaces.first!.firstPractice.date.convertDateToScheduleString()) - \(futureRaces.first!.date.convertDateToScheduleString())", location: futureRaces.first!.circuit.location.country)
         } else {
-//            tableViewHeader.configure(race: pastRaces.first!.raceName, circuit: pastRaces.first!.circuit.circuitName, date: pastRaces.first!.raceName, location: pastRaces.first!.circuit.location.country)
             tableViewHeader.configure(race: "Yes, I miss Formula One too", circuit: "Check out my other projects", date: "🙈🙉🐵", location: "")
-            
-//            tableViewHeader.isHidden = true
         }
         
         let headerTapGesture = UITapGestureRecognizer(target: self, action: #selector(headerTapped))
-               tableViewHeader.addGestureRecognizer(headerTapGesture)
-               tableViewHeader.isUserInteractionEnabled = true
-
-//
-//        tableViewHeader.configure(with: ScheduleModel)
+        tableViewHeader.addGestureRecognizer(headerTapGesture)
+        tableViewHeader.isUserInteractionEnabled = true
     }
     
+    // MARK: Selector methods
+    
     @objc private func headerTapped() {
-        // Sprawdzenie, czy lista futureRaces nie jest pusta
         guard !futureRaces.isEmpty else { return }
 
-        // Pobranie pierwszego wyścigu z listy futureRaces
         let race = futureRaces.first!
 
-        // Następnie można przejść do szczegółowego widoku wyścigu
         let detailsVC = ScheduleDetailsVC()
         detailsVC.race = race
         navigationController?.pushViewController(detailsVC, animated: true)
     }
     
-    private func setupActivityIndicator() {
-        view.addSubview(activityIndicator)
-
-        activityIndicator.style = .large
-        activityIndicator.color = UIColor.red
-        activityIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-    }
-
-    private func setupErrorLabel() {
-        view.addSubview(errorLabel)
-
-        errorLabel.text = "Failed to load standings. Please try again."
-        errorLabel.textColor = .red
-        errorLabel.textAlignment = .center
-        errorLabel.numberOfLines = 0
-        errorLabel.isHidden = true // Initially hidden
-
-        errorLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
+    @objc private func tryRefresh() {
+        reloadButton.isHidden = true
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+        
+        Task {
+            await fetchSchedule()
         }
     }
 }
@@ -254,7 +253,6 @@ extension ScheduleVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-
 }
 
 private enum ScheduleType: CaseIterable {

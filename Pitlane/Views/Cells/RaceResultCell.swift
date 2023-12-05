@@ -48,6 +48,10 @@ class RaceResultCell: UITableViewCell {
         statusLabel.text = model.time?.time ?? model.status
 
         flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
+        
+        nameLabel.setupHyphenation()
+        teamLabel.setupHyphenation()
+
     }
     
     func configureSprintData(with model: SprintResultDataModel) {
@@ -58,6 +62,9 @@ class RaceResultCell: UITableViewCell {
         statusLabel.text = model.time?.time ?? model.status
 
         flagImage.image = CountryFlagProvider.shared.nationalityFlag(for: model.driver.nationality)
+        
+        nameLabel.setupHyphenation()
+        teamLabel.setupHyphenation()
     }
     
     func configureWithQualifyingResult(with model: QualifyingResultDataModel, session: QualifyingResultType) {
@@ -102,11 +109,6 @@ class RaceResultCell: UITableViewCell {
             make.leading.equalTo(positionLabel.snp.trailing).offset(12)
             make.centerY.equalToSuperview()
             make.size.equalTo(CGSize(width: 28, height: 24))
-            
-            
-//            make.leading.equalTo(contentView.snp.leading).offset(18)
-//            make.centerY.equalToSuperview()
-//            make.size.equalTo(CGSize(width: 28, height: 24))
         }
 
         racerLabelsStack.snp.makeConstraints { make in

@@ -140,23 +140,23 @@ class ResultsDetailsVC: UIViewController {
     @objc private func resultTypeDidChange(_ segmentedControl: UISegmentedControl) {
         let selectedSegmentTitle = segmentedControl.titleForSegment(at: segmentedControl.selectedSegmentIndex)
 
-           switch selectedSegmentTitle {
-           case "Sprint":
-               displayedResultType = .sprint
-           case "Race":
-               displayedResultType = .race
-           case "Q3":
-               qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q3)
-               displayedResultType = .q3
-           case "Q2":
-               qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q2)
-               displayedResultType = .q2
-           case "Q1":
-               qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q1)
-               displayedResultType = .q1
-           default:
-               break
-           }
+        switch selectedSegmentTitle {
+        case "Sprint":
+            displayedResultType = .sprint
+        case "Race":
+            displayedResultType = .race
+        case "Q3":
+            qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q3)
+            displayedResultType = .q3
+        case "Q2":
+            qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q2)
+            displayedResultType = .q2
+        case "Q1":
+            qualifyingResultSorted = filterQualifyingResult(result: qualifyingResult, qualiSession: .q1)
+            displayedResultType = .q1
+        default:
+            break
+        }
         
         DispatchQueue.main.async {
             self.tableView.reloadData()

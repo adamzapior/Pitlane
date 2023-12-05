@@ -124,7 +124,8 @@ class Repository: RepositoryProtocol {
         case .success(let dto):
             let qualifyingResult = dto.mrData.raceTable.races.map { dtoQuali -> QualifyingResultModel in
                 let qualifyingResultData = dtoQuali.qualifyingResults.map { dtoResult in
-                    QualifyingResultDataModel(position: dtoResult.position, number: dtoResult.position,
+                    QualifyingResultDataModel(position: dtoResult.position, 
+                                              number: dtoResult.position,
                                               driver: createDriverModel(from: dtoResult.driver),
                                               constructor: createConstructorModel(from: dtoResult.constructor),
                                               q1: dtoResult.q1,
@@ -186,21 +187,6 @@ class Repository: RepositoryProtocol {
             return .failure(error)
         }
     }
-    
-//    func getStandings() async -> NetworkResult<([DriverStandingModel], [ConstructorStandingModel])> {
-//        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = getDriverStandings()
-//        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = getConstructorStandings()
-//
-//        do {
-//            let driverStandings = try await driverStandingsResult.get()
-//            let constructorStandings = try await constructorStandingsResult.get()
-//            return .success((driverStandings, constructorStandings))
-//        } catch {
-//            return .failure(error as! NetworkError)
-//        }
-//
-//
-//    }
     
     func getStandings() async -> NetworkResult<([DriverStandingModel], [ConstructorStandingModel])> {
         async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = getDriverStandings()
@@ -270,13 +256,12 @@ class Repository: RepositoryProtocol {
     }
 }
 
-// MARK: Parsing methods
+// MARK: Helping methods
 
 extension Repository {
     private func combineDate(date dateString: String, time timeString: String) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd' 'H:mm:ssZ"
-//        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
 
         let combinedString = "\(dateString) \(timeString)"

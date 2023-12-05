@@ -205,7 +205,7 @@ class ScheduleDetailsVC: UIViewController, UIScrollViewDelegate {
         locationView.configure(with: race) // TODO:
         
         roundInfoView.configure(titleText: "ROUND", valueText: "\(race?.round ?? "-")")
-        seasonInfoView.configure(titleText: "SEASON", valueText: "\(race?.season ?? "-")") 
+        seasonInfoView.configure(titleText: "SEASON", valueText: "\(race?.season ?? "-")")
         circuitInfoView.configure(titleText: "CIRCUIT", valueText: "\(race?.circuit.circuitName ?? "-")")
         
         locationView.snp.makeConstraints { make in

@@ -40,6 +40,11 @@ class ResultCell: UITableViewCell {
         circuitLabel.text = "\(raceModel.round) - \(raceModel.circuit.circuitName)"
         poleLabel.text = qualifyingModel.qualifyingResults[0].driver.surname
         winnerLabel.text = raceModel.results[0].driver.surname
+        
+        raceLabel.setupHyphenation()
+        circuitLabel.setupHyphenation()
+        poleLabel.setupHyphenation()
+        winnerLabel.setupHyphenation()
     }
     
     private func setupUI() {
@@ -103,6 +108,7 @@ class ResultCell: UITableViewCell {
         
     }
     
+    // TODO: Flag image size
     private func adjustFlagImageSize() {
         let categorySize = UIApplication.shared.preferredContentSizeCategory
         

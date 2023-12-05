@@ -23,11 +23,11 @@ class ScheduleDetailsLocationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: ScheduleModel) {
-        print("Configuring LocationInfoView with model: \(model)")
-        
+    func configure(with model: ScheduleModel) {        
         locationNameLabel.text = model.circuit.location.locality
         flagImage.image = CountryFlagProvider.shared.countryFlag(for: model.circuit.location.country)
+        
+        locationNameLabel.setupHyphenation()
     }
     
     private func setupUI() {
@@ -57,6 +57,7 @@ class ScheduleDetailsLocationView: UIView {
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .UI.secondaryText
         titleLabel.text = "LOCATION"
+        titleLabel.setupHyphenation()
         
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(self.snp.top).offset(12)

@@ -23,6 +23,9 @@ class ScheduleTimetableItemView: UIView {
     func configure(practiceNameText: String, dateText: String) {
         practiceNameLabel.text = practiceNameText
         dateLabel.text = dateText
+        
+        practiceNameLabel.setupHyphenation()
+        dateLabel.setupHyphenation()
     }
     
     private func setupUI() {

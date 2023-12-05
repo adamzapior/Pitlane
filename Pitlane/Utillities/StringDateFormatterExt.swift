@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension Date {
     func convertDateToScheduleString() -> String {
         let dateFormatter = DateFormatter()
@@ -31,7 +30,6 @@ extension Date {
 }
 
 extension String {
-    
     func scheduleDateFormatter() -> String {
         let inputFormatter = DateFormatter()
         inputFormatter.dateFormat = "yyyy-MM-dd"

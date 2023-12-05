@@ -17,7 +17,11 @@ class ResultsVC: UIViewController {
     
     let tableView = UITableView()
     private let activityIndicator = UIActivityIndicatorView()
-    private let errorLabel = UILabel()
+    lazy var reloadButton: ReloadButton = {
+        let button = ReloadButton(color: .UI.theme, title: "Something gone wrong, try to reload", systemImageName: "arrow.clockwise")
+        button.addTarget(self, action: #selector(tryRefresh), for: .touchUpInside)
+        return button
+    }()
     
     init(repository: Repository) {
         self.repository = repository
@@ -34,7 +38,6 @@ class ResultsVC: UIViewController {
         
         setupUI()
         setupActivityIndicator()
-        setupErrorLabel()
 
         activityIndicator.startAnimating()
         
@@ -47,7 +50,7 @@ class ResultsVC: UIViewController {
     
     private func handleRaceResult() async throws {
         do {
-            let raceResults = try await self.repository.getRaceResult().get()
+            let raceResults = try await repository.getRaceResult().get()
             DispatchQueue.main.async {
                 self.raceResult = raceResults
             }
@@ -58,7 +61,7 @@ class ResultsVC: UIViewController {
 
     private func handleQualifyingResult() async throws {
         do {
-            let qualifyingResults = try await self.repository.getQualifyingResult().get()
+            let qualifyingResults = try await repository.getQualifyingResult().get()
             DispatchQueue.main.async {
                 self.qualifyingResult = qualifyingResults
             }
@@ -69,7 +72,7 @@ class ResultsVC: UIViewController {
 
     private func handleSprintResult() async throws {
         do {
-            let sprintResults = try await self.repository.getSprintResult().get()
+            let sprintResults = try await repository.getSprintResult().get()
             DispatchQueue.main.async {
                 self.sprintResult = sprintResults
             }
@@ -87,34 +90,17 @@ class ResultsVC: UIViewController {
                 
                 try await group.waitForAll()
             })
-            // Aktualizacja UI po pomyślnym pobraniu wszystkich wyników
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 self.activityIndicator.stopAnimating()
-                self.errorLabel.isHidden = true
                 self.tableView.isHidden = false
-                
-                for i in self.raceResult {
-                    print(i.raceName)
-                }
-                
-                for s in self.sprintResult {
-                    print(s.raceName)
-                }
             }
         } catch {
             print("Wystąpił nieoczekiwany błąd: \(error)")
             DispatchQueue.main.async {
-                self.updateUIForError()
+                self.setupReloadButtonIfNeeded()
+                self.activityIndicator.stopAnimating()
             }
-        }
-    }
-
-    
-    private func updateUIForError() {
-        DispatchQueue.main.async {
-            self.errorLabel.isHidden = false
-            self.activityIndicator.stopAnimating()
         }
     }
 
@@ -155,18 +141,24 @@ class ResultsVC: UIViewController {
         }
     }
 
-    private func setupErrorLabel() {
-        view.addSubview(errorLabel)
-
-        errorLabel.text = "Failed to load standings. Please try again."
-        errorLabel.textColor = .red
-        errorLabel.textAlignment = .center
-        errorLabel.numberOfLines = 0
-        errorLabel.isHidden = true // Initially hidden
-
-        errorLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
+    func setupReloadButtonIfNeeded() {
+        if reloadButton.superview == nil {
+            view.addSubview(reloadButton)
+            reloadButton.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.centerY.equalToSuperview()
+            }
+        }
+        reloadButton.isHidden = false
+    }
+    
+    @objc private func tryRefresh() {
+        reloadButton.isHidden = true
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+        
+        Task {
+            await getResults()
         }
     }
 }
@@ -194,14 +186,9 @@ extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
         detailsVC.qualifyingResult = qualifyingResult[indexPath.row]
         detailsVC.sprintResult = findSprintResult(forRace: raceResult[indexPath.row])
 
-        
         navigationController?.pushViewController(detailsVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-//    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-//        return 128
-//    }
     
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
@@ -209,6 +196,7 @@ extension ResultsVC: UITableViewDelegate, UITableViewDataSource {
 }
 
 // MARK: didSelectRow Helper
+
 extension ResultsVC {
     func findSprintResult(forRace race: RaceResultModel) -> SprintResultModel? {
         for sprint in sprintResult {
@@ -218,13 +206,7 @@ extension ResultsVC {
         }
         return nil
     }
-    
-//    func extractRaceResult(for model: RaceResultModel) -> [RaceResultDataModel] {
-//        
-//    }
-//    return
 }
-
 
 enum ResultsState {
     case success(race: [RaceResultModel], qualifying: [QualifyingResultModel], sprint: [SprintResultModel])

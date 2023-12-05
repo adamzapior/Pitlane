@@ -2,7 +2,6 @@ import Foundation
 import SnapKit
 import UIKit
 
-
 class StandingsVC: UIViewController {
     var repository: Repository
 
@@ -20,7 +19,11 @@ class StandingsVC: UIViewController {
     private lazy var segmentedControl = UISegmentedControl(items: standingType)
 
     private let activityIndicator = UIActivityIndicatorView()
-    private let errorLabel = UILabel()
+    lazy var reloadButton: ReloadButton = {
+        let button = ReloadButton(color: .UI.theme, title: "Something gone wrong, try to reload", systemImageName: "arrow.clockwise")
+        button.addTarget(self, action: #selector(tryRefresh), for: .touchUpInside)
+        return button
+    }()
 
     init(repository: Repository) {
         self.repository = repository
@@ -39,7 +42,6 @@ class StandingsVC: UIViewController {
 
         setupUI()
         setupActivityIndicator()
-        setupErrorLabel()
 
         activityIndicator.startAnimating()
 
@@ -47,10 +49,9 @@ class StandingsVC: UIViewController {
             await fetchStandings()
         }
     }
-    
 
     // MARK: Networking & Data setup
-    
+
     private func fetchStandings() async {
         let standingsResult = await repository.getStandings()
 
@@ -58,78 +59,23 @@ class StandingsVC: UIViewController {
             case let .success((fetchedDriverStandings, fetchedConstructorStandings)):
                 driverStandings = fetchedDriverStandings
                 constructorStandings = fetchedConstructorStandings
-                updateDriverHighestPoints()
-                updateConstuctorHighestPoints()
 
-                // Update the UI directly
                 DispatchQueue.main.async {
                     self.activityIndicator.stopAnimating()
                     self.tableView.isHidden = false
-                    self.errorLabel.isHidden = true
                     self.tableView.reloadData()
                 }
 
-            // Handle errors directly in the VC
-            case let .failure(error):
-                print("Error fetching standings: \(error)")
-                updateUIForError(error)
+            case .failure:
+                setupReloadButtonIfNeeded()
+                activityIndicator.stopAnimating()
         }
-    }
-
-    
-
-//    private func fetchStandings() async {
-//        async let driverStandingsResult: NetworkResult<[DriverStandingModel]> = repository.getDriverStandings()
-//        async let constructorStandingsResult: NetworkResult<[ConstructorStandingModel]> = repository.getConstructorStandings()
-//
-//        let driverResult = await driverStandingsResult
-//        let constructorResult = await constructorStandingsResult
-//
-//        switch (driverResult, constructorResult) {
-//            case let (.success(fetchedDriverStandings), .success(fetchedConstructorStandings)):
-//                driverStandings = fetchedDriverStandings
-//                constructorStandings = fetchedConstructorStandings
-//                updateDriverHighestPoints()
-//                updateConstuctorHighestPoints()
-//
-//                // Update the UI directly
-//                DispatchQueue.main.async {
-//                    self.activityIndicator.stopAnimating()
-//                    self.tableView.isHidden = false
-//                    self.errorLabel.isHidden = true
-//                    self.tableView.reloadData()
-//                }
-//
-//            // Handle errors directly in the VC
-//            case let (.failure(driverError), _):
-//                print("Error fetching driver standings")
-//                updateUIForError(driverError)
-//
-//            case let (_, .failure(constructorError)):
-//                print("Error fetching constructor standings")
-//                updateUIForError(constructorError)
-//        }
-//    }
-
-    private func updateUIForError(_: Error) {
-        DispatchQueue.main.async {
-            self.errorLabel.isHidden = false
-            self.activityIndicator.stopAnimating()
-        }
-    }
-
-    private func updateDriverHighestPoints() {
-        highestPoints = driverStandings.compactMap { Int($0.points) }.max()
-    }
-
-    private func updateConstuctorHighestPoints() {
-        constuctorHighestPoints = constructorStandings.compactMap { Int($0.points) }.max()
     }
 
     // MARK: UI Setup
 
     private func setupUI() {
-        navigationItem.title = "2023"
+        navigationItem.title = "Standings"
         view.backgroundColor = .systemBackground
 
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -190,19 +136,16 @@ class StandingsVC: UIViewController {
         }
     }
 
-    private func setupErrorLabel() {
-        view.addSubview(errorLabel)
-
-        errorLabel.text = "Failed to load standings. Please try again."
-        errorLabel.textColor = .red
-        errorLabel.textAlignment = .center
-        errorLabel.numberOfLines = 0
-        errorLabel.isHidden = true // Initially hidden
-
-        errorLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
+    private func setupReloadButtonIfNeeded() {
+        if reloadButton.superview == nil {
+            view.addSubview(reloadButton)
+            reloadButton.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.centerY.equalToSuperview()
+            }
         }
+
+        reloadButton.isHidden = false
     }
 
     // MARK: Selectors & Gesture handling
@@ -218,6 +161,16 @@ class StandingsVC: UIViewController {
         }
         DispatchQueue.main.async {
             self.tableView.reloadData()
+        }
+    }
+
+    @objc private func tryRefresh() {
+        reloadButton.isHidden = true
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+
+        Task {
+            await fetchStandings()
         }
     }
 }
@@ -242,14 +195,14 @@ extension StandingsVC: UITableViewDelegate, UITableViewDataSource {
             case .driver:
                 cell.configureDriverCell(with: driverStandings[indexPath.row])
             case .constructor:
-            cell.configureConstuctorCell(with: constructorStandings[indexPath.row])
+                cell.configureConstuctorCell(with: constructorStandings[indexPath.row])
         }
 
         return cell
     }
 
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-        return 64
+        return UITableView.automaticDimension
     }
 }
 
